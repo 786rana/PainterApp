@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="frontend/frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="PainterApp.AppHost/PainterApp.AppHost.csproj" />
+  <Project Path="PainterApp.Server/PainterApp.Server.csproj" />
+</Solution>
