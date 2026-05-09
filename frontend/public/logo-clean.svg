@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-labelledby="title desc">
+  <title id="title">Zaman Paints & Decor</title>
+  <desc id="desc">Clean circular paint drop logo with warm orange gradient</desc>
+  <defs>
+    <linearGradient id="g" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff9a3c" />
+      <stop offset="100%" stop-color="#ff4d00" />
+    </linearGradient>
+    <filter id="ds" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <g transform="translate(100,100)">
+    <circle r="70" fill="url(#g)" filter="url(#ds)" />
+    <path d="M -6 -22 C -6 -36 6 -44 18 -30 C 28 -16 18 6 2 18 C -14 30 -6 4 -6 -22 Z" fill="#fff" opacity="0.98" transform="translate(-6,2) scale(0.9)"/>
+  </g>
+</svg>

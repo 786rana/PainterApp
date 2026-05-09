@@ -1,30 +1,61 @@
 import { useState } from "react";
 
-const Navbar = () => {
-  const [open, setOpen] = useState(false);
+const Navbar = ({ lang, setLang }: any) => {
+    const [open, setOpen] = useState(false);
 
-  return (
-    <header className="navbar">
+    const menu = {
+        en: ["Home", "Services", "Work", "Contact"],
+        ar: ["الرئيسية", "الخدمات", "أعمالنا", "اتصل بنا"]
+    };
 
-      <div className="logo">🎨 PainterPro</div>
+    return (
+        <header className="navbar" dir={lang === "ar" ? "rtl" : "ltr"}>
 
-      <div className="menu" onClick={() => setOpen(!open)}>
-        ☰
-      </div>
+            <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+                Zaman Paints & Decor
+            </div>
 
-      <nav className={`nav ${open ? "active" : ""}`}>
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="#work">Our Work</a>
-        <a href="#contact">Contact</a>
-      </nav>
+            <div className="nav-right">
 
-      <a className="call-btn" href="tel:+966597507224">
-        📞 Call Now
-      </a>
+                <nav className={`nav ${open ? "active" : ""}`} aria-label={lang === "ar" ? "قائمة التنقل" : "Main navigation"}>
+                    <a href="#home">{menu[lang][0]}</a>
+                    <a href="#services">{menu[lang][1]}</a>
+                    <a href="#work">{menu[lang][2]}</a>
+                    <a href="#contact">{menu[lang][3]}</a>
+                </nav>
 
-    </header>
-  );
+                {/* Language Toggle */}
+                <button
+                    className="lang-btn"
+                    onClick={() => setLang(lang === "en" ? "ar" : "en")}
+                    aria-label={lang === "en" ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}
+                >
+                    {lang === "en" ? "AR" : "EN"}
+                </button>
+
+                {/* Call Button */}
+                <a href="tel:+966597507224" className="call-btn" aria-label={lang === "ar" ? "اتصل الان" : "Call now"}>
+                    📞
+                </a>
+
+                {/* Mobile Menu */}
+                <button
+                    className={`menu ${open ? 'open' : ''}`}
+                    onClick={() => {
+                        setOpen(!open);
+                        // lock background scroll when menu open
+                        if (!open) document.body.style.overflow = 'hidden';
+                        else document.body.style.overflow = '';
+                    }}
+                    aria-expanded={open}
+                    aria-label={open ? (lang === "ar" ? "اغلاق القائمة" : "Close menu") : (lang === "ar" ? "فتح القائمة" : "Open menu")}
+                >
+                    ☰
+                </button>
+            </div>
+
+        </header>
+    );
 };
 
 export default Navbar;

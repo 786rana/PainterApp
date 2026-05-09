@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" role="img" aria-labelledby="title desc">
+  <title id="title">Zaman Paints Icon</title>
+  <desc id="desc">Circular monogram with paint drop and brush, orange gradient</desc>
+  <defs>
+    <linearGradient id="lg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF7B00" />
+      <stop offset="100%" stop-color="#FF4D00" />
+    </linearGradient>
+    <filter id="ds" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(100,100)">
+    <circle r="70" fill="url(#lg)" filter="url(#ds)"/>
+    <!-- paint drop -->
+    <path d="M -6 -14 C -6 -26 6 -36 18 -20 C 26 -6 14 12 0 12 C -14 12 -6 -2 -6 -14 Z" fill="#fff" opacity="0.96" transform="translate(-6,2) scale(0.9)"/>
+    <!-- small brush handle -->
+    <rect x="24" y="28" width="40" height="8" rx="4" transform="rotate(20 24 28)" fill="#fff" opacity="0.14" />
+  </g>
+</svg>

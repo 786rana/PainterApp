@@ -1,51 +1,59 @@
 import React from "react";
 
-const Footer: React.FC = () => {
+type FooterProps = {
+  lang: "en" | "ar";
+};
+
+const Footer: React.FC<FooterProps> = ({ lang }) => {
+  const isAr = lang === "ar";
+
   return (
-    <footer className="footer">
+    <footer className="footer" dir={isAr ? "rtl" : "ltr"}>
 
       <div className="footer-container">
 
         {/* BRAND */}
         <div className="footer-box">
-          <h2>🎨 PainterPro</h2>
+          <h2>🎨 {isAr ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}</h2>
           <p>
-            Professional painting services for homes, offices, and commercial spaces.
-            We deliver quality, trust, and perfection in every brush stroke.
+            {isAr
+              ? "خدمات طلاء وديكور عالية الجودة للمشاريع السكنية والتجارية."
+              : "High-quality painting and decor services for residential and commercial projects."}
           </p>
         </div>
 
         {/* QUICK LINKS */}
         <div className="footer-box">
-          <h3>Quick Links</h3>
-          <a href="#home">Home</a>
-          <a href="#services">Services</a>
-          <a href="#work">Our Work</a>
-          <a href="#contact">Contact</a>
+          <h3>{isAr ? "روابط سريعة" : "Quick Links"}</h3>
+          <a href="#home">{isAr ? "الرئيسية" : "Home"}</a>
+          <a href="#services">{isAr ? "الخدمات" : "Services"}</a>
+          <a href="#work">{isAr ? "أعمالنا" : "Our Work"}</a>
+          <a href="#contact">{isAr ? "اتصل بنا" : "Contact"}</a>
         </div>
 
         {/* SERVICES */}
         <div className="footer-box">
-          <h3>Services</h3>
-          <p>Interior Painting</p>
-          <p>Exterior Painting</p>
-          <p>Texture Design</p>
-          <p>Wood Polish</p>
+          <h3>{isAr ? "الخدمات" : "Services"}</h3>
+          <p>{isAr ? "دهان داخلي" : "Interior Painting"}</p>
+          <p>{isAr ? "دهان خارجي" : "Exterior Painting"}</p>
+          <p>{isAr ? "تصميم ملمس" : "Texture Design"}</p>
+          <p>{isAr ? "تلميع الخشب" : "Wood Polish"}</p>
         </div>
 
         {/* CONTACT */}
         <div className="footer-box">
-          <h3>Contact</h3>
+          <h3>{isAr ? "اتصل" : "Contact"}</h3>
           <p>📞 +966 597507224</p>
-          <p>📍 Available in your city</p>
-          <p>💬 WhatsApp Support</p>
+          <p>📍 {isAr ? "متوفر في مدينتك" : "Available in your city"}</p>
+          <p>💬 {isAr ? "دعم واتساب" : "WhatsApp Support"}</p>
 
           <a
             className="whatsapp-btn"
             href="https://wa.me/966597507224"
             target="_blank"
+            rel="noopener noreferrer"
           >
-            Chat on WhatsApp
+            {isAr ? "الدردشة عبر واتساب" : "Chat on WhatsApp"}
           </a>
         </div>
 
@@ -53,7 +61,7 @@ const Footer: React.FC = () => {
 
       {/* BOTTOM BAR */}
       <div className="footer-bottom">
-        © 2026 PainterPro. All Rights Reserved.
+        © {new Date().getFullYear()} {isAr ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}. {isAr ? "جميع الحقوق محفوظة." : "All Rights Reserved."}
       </div>
 
     </footer>

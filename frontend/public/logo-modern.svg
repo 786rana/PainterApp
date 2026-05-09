@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="240" viewBox="0 0 800 240" role="img" aria-labelledby="title desc">
+  <title id="title">Zaman Paints & Decor - Modern Logo</title>
+  <desc id="desc">Modern horizontal logo with stylized paint stroke and clean wordmark</desc>
+  <defs>
+    <linearGradient id="gradA" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A00"/>
+      <stop offset="100%" stop-color="#FF4D00"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Left mark: paint stroke + circle -->
+  <g transform="translate(80,120)">
+    <path d="M-48,-12 C-24,-60 36,-60 60,-8 C66,4 54,28 36,40 C18,52 -6,58 -32,44 C-58,30 -60,0 -48,-12 Z" fill="url(#gradA)" filter="url(#soft)"/>
+    <circle cx="40" cy="8" r="6" fill="#fff" opacity="0.95"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(170,140)">
+    <text x="0" y="-12" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="40" fill="#111">Zaman Paints</text>
+    <text x="0" y="30" font-family="Poppins, Arial, sans-serif" font-weight="500" font-size="16" fill="#666">& Decor — Professional Painting & Interior Finishes</text>
+  </g>
+
+  <!-- Accent stroke under wordmark -->
+  <path d="M170 160 C 300 140, 420 140, 600 160" stroke="url(#gradA)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+</svg>
