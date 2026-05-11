@@ -1,7 +1,8 @@
 
 import { useState } from "react";
 import { sendContact } from "../api/contactApi";
-import { Contact } from "../types/contact";
+//import type { Contact } from "../types/contact";
+import type { Contact } from "../types/contact";
 
 const ContactPage = () => {
   const [form, setForm] = useState<Contact>({

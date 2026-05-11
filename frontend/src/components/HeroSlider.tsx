@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
+
 
 const slides = [
   {
@@ -18,7 +20,9 @@ const slides = [
   }
 ];
 
-const HeroSlider = ({ lang }: any) => {
+type Lang = "en" | "ar";
+
+const HeroSlider = ({ lang }: { lang: Lang }) => {
     const [index, setIndex] = useState(0);
 
     useEffect(() => {

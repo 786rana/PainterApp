@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 
-const Navbar = ({ lang, setLang }: any) => {
+type Lang = "en" | "ar";
+
+const Navbar = ({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) => {
     const [open, setOpen] = useState(false);
 
     const menu = {
