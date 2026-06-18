@@ -1,23 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-
+import { BRAND_NAME, heroImages, imageAlt } from "../data/services";
 
 const slides = [
-  {
-    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
-    en: "Luxury Painting & Decoration Services",
-    ar: "خدمات دهان وديكور فاخرة"
-  },            
-  {
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-    en: "Modern Interior & Exterior Designs",
-    ar: "تصاميم داخلية وخارجية عصرية"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-    en: "Professional Finishing With Perfection",
-    ar: "تشطيبات احترافية بإتقان"
-  }
+    {
+        img: heroImages.painting,
+        en: "Professional Painting",
+        ar: "دهان احترافي",
+        highlight: { en: "& Finishing", ar: "وتشطيبات" },
+        imageName: "painting",
+    },
+    {
+        img: heroImages.exterior,
+        en: "Villa & Exterior",
+        ar: "فلل وواجهات",
+        highlight: { en: "Specialists", ar: "خارجية" },
+        imageName: "exterior",
+    },
+    {
+        img: heroImages.ceiling,
+        en: "Luxury Ceiling",
+        ar: "أسقف فاخرة",
+        highlight: { en: "Design", ar: "وتصميم" },
+        imageName: "ceiling",
+    },
 ];
 
 type Lang = "en" | "ar";
@@ -28,77 +33,64 @@ const HeroSlider = ({ lang }: { lang: Lang }) => {
     useEffect(() => {
         const timer = setInterval(() => {
             setIndex((prev) => (prev + 1) % slides.length);
-        }, 4500);
-
+        }, 5500);
         return () => clearInterval(timer);
     }, []);
 
     const slide = slides[index];
 
-    //const goTo = (n: number) => setIndex((n + slides.length) % slides.length);
-
-    //const onSearch = (e: React.FormEvent) => {
-    //    e.preventDefault();
-    //    // preserve functionality: just navigate to services section
-    //    const el = document.getElementById("services");
-    //    if (el) el.scrollIntoView({ behavior: "smooth" });
-    //};
-
     return (
-        <section className="hero" aria-roledescription="carousel">
-            <img src={slide.img} alt={slide[lang]} loading="lazy" />
+        <section className="hero" id="home" aria-roledescription="carousel">
+            <div className="hero-bg">
+                {slides.map((s, i) => (
+                    <img
+                        key={s.imageName}
+                        src={s.img}
+                        alt={imageAlt(`${s[lang]} ${s.highlight[lang]}`, lang)}
+                        className={i === index ? "active" : ""}
+                    />
+                ))}
+            </div>
 
             <div className="hero-overlay">
-                <div className="hero-content">
-                    <div className="hero-brand">
+                <div className="hero-content" key={index}>
+                    <div className="hero-badge">
+                        <span className="dot" />
+                        {lang === "ar"
+                            ? `${BRAND_NAME.ar} — خدمات دهان موثوقة في السعودية`
+                            : `${BRAND_NAME.en} — Trusted Painting Services in Saudi Arabia`}
                     </div>
-                    <h1>{slide[lang]}</h1>
-                    <p className="hero-sub">{lang === "ar" ? "تجربة طلاء عالية الجودة لخدماتك" : "High quality painting experience for your space"}</p>
-                    <a className="hero-btn" href="#contact">{lang === "ar" ? "احصل على عرض" : "Get Quote"}</a>
-                    {/*<div className="hero-brand" aria-hidden>*/}
-                    {/*    */}{/* place for small brand / category chips */}
-                    {/*    <span style={{ opacity: 0.95 }}>{lang === "ar" ? "دهان وديكور" : "Painting & Decoration"}</span>*/}
-                    {/*</div>*/}
 
-                    {/*<h1>*/}
-                    {/*    {lang === "ar" ? (*/}
-                    {/*        <>*/}
-                    {/*            أفضل خدمات <span style={{ color: "var(--primary)" }}>الدهان</span>*/}
-                    {/*            <br /> و التشطيبات الداخلية*/}
-                    {/*        </>*/}
-                    {/*    ) : (*/}
-                    {/*        <>*/}
-                    {/*            Premium <span style={{ color: "var(--primary)" }}>Painting</span> & Finishing Services*/}
-                    {/*        </>*/}
-                    {/*    )}*/}
-                    {/*</h1>*/}
+                    <h1>
+                        {slide[lang]}{" "}
+                        <span>{slide.highlight[lang]}</span>
+                    </h1>
 
-                    {/*<p className="hero-sub">*/}
-                    {/*    {lang === "ar" ? "نحول مساحاتك إلى بيئات جميلة ودائمة." : "We transform spaces with high-quality paint and finishing."}*/}
-                    {/*</p>*/}
+                    <p className="hero-sub">
+                        {lang === "ar"
+                            ? "نحوّل مساحاتك بجودة عالية ومواد فاخرة وتسليم في الوقت المحدد"
+                            : "Transform your space with premium materials, expert craftsmanship, and on-time delivery"}
+                    </p>
 
-                    {/* Search-like form similar to vonq hero layout (layout only) */}
-                    {/*<form onSubmit={onSearch} style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "center", marginTop: 18 }}>*/}
-                    {/*    <input name="q" placeholder={lang === "ar" ? "ما الذي تبحث عنه؟" : "What are you looking for?"} style={{ padding: '12px 16px', borderRadius: 8, border: 'none', minWidth: 320, boxShadow: '0 6px 18px rgba(2,6,23,0.12)' }} />*/}
-                    {/*    <select name="category" aria-label="category" style={{ padding: '12px 14px', borderRadius: 8, border: 'none', boxShadow: '0 6px 18px rgba(2,6,23,0.06)' }}>*/}
-                    {/*        <option value="all">{lang === "ar" ? "كل الخدمات" : "All services"}</option>*/}
-                    {/*        <option value="interior">{lang === "ar" ? "تشطيبات داخلية" : "Interior"}</option>*/}
-                    {/*        <option value="exterior">{lang === "ar" ? "تشطيبات خارجية" : "Exterior"}</option>*/}
-                    {/*    </select>*/}
-                    {/*    <button className="hero-btn" type="submit">{lang === "ar" ? "ابحث" : "Find"}</button>*/}
-                    {/*</form>*/}
+                    <div className="hero-actions">
+                        <a className="hero-btn" href="#contact">
+                            {lang === "ar" ? "احصل على عرض سعر" : "Get Free Quote"}
+                        </a>
+                        <a className="hero-btn-outline" href="#services">
+                            {lang === "ar" ? "استعرض خدماتنا" : "View Services"}
+                        </a>
+                    </div>
 
-                    {/*<div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 18 }}>*/}
-                    {/*    <a className="call-btn" href="#contact">{lang === "ar" ? "احصل على عرض" : "Get Quote"}</a>*/}
-                    {/*    <a className="btn" href="#projects">{lang === "ar" ? "مشاريعنا" : "Our Projects"}</a>*/}
-                    {/*</div>*/}
-
-                    {/* small slide dots/navigation */}
-                    {/*<div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 20 }} aria-hidden>*/}
-                    {/*    {slides.map((s, i) => (*/}
-                    {/*        <button key={i} onClick={() => goTo(i)} style={{ width: 10, height: 10, borderRadius: 999, border: 'none', background: i === index ? 'var(--primary)' : 'rgba(255,255,255,0.45)' }} aria-label={`Go to slide ${i + 1}`} />*/}
-                    {/*    ))}*/}
-                    {/*</div>*/}
+                    <div className="hero-dots">
+                        {slides.map((s, i) => (
+                            <button
+                                key={s.imageName}
+                                className={i === index ? "active" : ""}
+                                onClick={() => setIndex(i)}
+                                aria-label={`${s[lang]} ${s.highlight[lang]}`}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

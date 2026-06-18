@@ -1,7 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { categoryHref, serviceCategories, serviceHref } from "../data/services";
 
 type Lang = "en" | "ar";
+
+const navLinks = {
+    en: [
+        { label: "Home", href: "#home" },
+        { label: "Our Work", href: "#work" },
+        { label: "About", href: "#about" },
+        { label: "Contact", href: "#contact" },
+    ],
+    ar: [
+        { label: "الرئيسية", href: "#home" },
+        { label: "أعمالنا", href: "#work" },
+        { label: "من نحن", href: "#about" },
+        { label: "اتصل بنا", href: "#contact" },
+    ],
+};
 
 const Navbar = ({
     lang,
@@ -11,119 +26,167 @@ const Navbar = ({
     setLang: (l: Lang) => void;
 }) => {
     const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [servicesOpen, setServicesOpen] = useState(false);
+    const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
-    const menu = {
-        en: ["Home", "Services", "Projects", "About", "Contact"],
-        ar: ["الرئيسية", "الخدمات", "المشاريع", "من نحن", "اتصل بنا"],
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 40);
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    useEffect(() => {
+        document.body.style.overflow = open ? "hidden" : "";
+        return () => { document.body.style.overflow = ""; };
+    }, [open]);
+
+    const closeMenu = () => {
+        setOpen(false);
+        setServicesOpen(false);
+        setMobileServicesOpen(false);
     };
 
+    const servicesLabel = lang === "ar" ? "الخدمات" : "Services";
+
     return (
-        <header className="navbar">
-            {/* LOGO */}
-            <div className="logo">
-                <span className="logo-icon">🎨</span>
-                <div>
-                    <h2>Zaman</h2>
-                    <span>Paints & Decor</span>
-                </div>
-            </div>
-
-            {/* NAVIGATION */}
-            <nav className={`nav ${open ? "active" : ""}`}>
-                <a href="#home">{menu[lang][0]}</a>
-                <a href="#services">{menu[lang][1]}</a>
-                <a href="#projects">{menu[lang][2]}</a>
-                <a href="#about">{menu[lang][3]}</a>
-                <a href="#contact">{menu[lang][4]}</a>
-            </nav>
-
-            {/* RIGHT */}
-            <div className="nav-actions">
-
-                <button
-                    className="lang-btn"
-                    onClick={() => setLang(lang === "en" ? "ar" : "en")}
-                >
-                    {lang === "en" ? "AR" : "EN"}
-                </button>
-
-                <a href="tel:+966597507224" className="quote-btn">
-                    Call Now
+        <>
+            <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
+                <a href="#home" className="logo" onClick={closeMenu}>
+                    <img
+                        src="/logo-icon.svg"
+                        alt={lang === "ar" ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}
+                    />
+                    <div className="logo-text">
+                        <h2>{lang === "ar" ? "زمان" : "Zaman"}</h2>
+                        <span>{lang === "ar" ? "للدهانات والديكور" : "Paints & Decor"}</span>
+                    </div>
                 </a>
 
-                <button
-                    className="menu-btn"
-                    onClick={() => setOpen(!open)}
-                >
-                    ☰
-                </button>
-            </div>
-        </header>
+                <nav className={`nav ${open ? "active" : ""}`} aria-label="Main navigation">
+                    <a href="#home" onClick={closeMenu}>
+                        {navLinks[lang][0].label}
+                    </a>
+
+                    {/* Desktop services dropdown */}
+                    <div
+                        className={`nav-dropdown ${servicesOpen ? "open" : ""}`}
+                        onMouseEnter={() => setServicesOpen(true)}
+                        onMouseLeave={() => setServicesOpen(false)}
+                    >
+                        <button
+                            type="button"
+                            className="nav-dropdown-trigger"
+                            aria-expanded={servicesOpen}
+                            aria-haspopup="true"
+                            onClick={() => setServicesOpen((v) => !v)}
+                        >
+                            {servicesLabel}
+                            <span className="nav-chevron" aria-hidden="true">▾</span>
+                        </button>
+
+                        <div className="nav-dropdown-menu">
+                            {serviceCategories.map((cat) => (
+                                <div key={cat.id} className="nav-dropdown-group">
+                                    <a
+                                        href={categoryHref(cat.id)}
+                                        className="nav-dropdown-heading"
+                                        onClick={closeMenu}
+                                    >
+                                        {lang === "ar" ? cat.label.ar : cat.label.en}
+                                    </a>
+                                    {cat.services.map((s) => (
+                                        <a
+                                            key={s.id}
+                                            href={serviceHref(s.id)}
+                                            className="nav-dropdown-item"
+                                            onClick={closeMenu}
+                                        >
+                                            {lang === "ar" ? s.title.ar : s.title.en}
+                                        </a>
+                                    ))}
+                                </div>
+                            ))}
+                            <a href="#services" className="nav-dropdown-all" onClick={closeMenu}>
+                                {lang === "ar" ? "عرض كل الخدمات ←" : "View all services →"}
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Mobile services accordion */}
+                    <div className={`nav-mobile-services ${mobileServicesOpen ? "open" : ""}`}>
+                        <button
+                            type="button"
+                            className="nav-mobile-services-trigger"
+                            onClick={() => setMobileServicesOpen((v) => !v)}
+                            aria-expanded={mobileServicesOpen}
+                        >
+                            {servicesLabel}
+                            <span className="nav-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <div className="nav-mobile-services-panel">
+                            {serviceCategories.map((cat) => (
+                                <div key={cat.id} className="nav-mobile-group">
+                                    <a
+                                        href={categoryHref(cat.id)}
+                                        className="nav-mobile-heading"
+                                        onClick={closeMenu}
+                                    >
+                                        {lang === "ar" ? cat.label.ar : cat.label.en}
+                                    </a>
+                                    {cat.services.map((s) => (
+                                        <a
+                                            key={s.id}
+                                            href={serviceHref(s.id)}
+                                            className="nav-mobile-item"
+                                            onClick={closeMenu}
+                                        >
+                                            {lang === "ar" ? s.title.ar : s.title.en}
+                                        </a>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {navLinks[lang].slice(1).map((link) => (
+                        <a key={link.href} href={link.href} onClick={closeMenu}>
+                            {link.label}
+                        </a>
+                    ))}
+                </nav>
+
+                <div className="nav-actions">
+                    <button
+                        className="lang-btn"
+                        onClick={() => setLang(lang === "en" ? "ar" : "en")}
+                        aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
+                    >
+                        {lang === "en" ? "عربي" : "EN"}
+                    </button>
+
+                    <a href="tel:+966597507224" className="quote-btn">
+                        {lang === "ar" ? "اتصل الآن" : "Call Now"}
+                    </a>
+
+                    <button
+                        className="menu-btn"
+                        onClick={() => setOpen(!open)}
+                        aria-expanded={open}
+                        aria-label={open ? "Close menu" : "Open menu"}
+                    >
+                        {open ? "✕" : "☰"}
+                    </button>
+                </div>
+            </header>
+
+            <div
+                className={`mobile-backdrop ${open ? "active" : ""}`}
+                onClick={closeMenu}
+                aria-hidden="true"
+            />
+        </>
     );
 };
 
 export default Navbar;
-///* eslint-disable @typescript-eslint/no-explicit-any */
-//import { useState } from "react";
-
-//type Lang = "en" | "ar";
-
-//const Navbar = ({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) => {
-//    const [open, setOpen] = useState(false);
-
-//    const menu = {
-//        en: ["Home", "Services", "Work", "Contact"],
-//        ar: ["الرئيسية", "الخدمات", "أعمالنا", "اتصل بنا"]
-//    };
-
-//    return (
-//        <header className="navbar" dir={lang === "ar" ? "rtl" : "ltr"}>
-
-//            <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
-//                Zaman Paints & Decor
-//            </div>
-
-//            <div className="nav-right">
-
-//                <nav className={`nav ${open ? "active" : ""}`} aria-label={lang === "ar" ? "قائمة التنقل" : "Main navigation"}>
-//                    <a href="#home">{menu[lang][0]}</a>
-//                    <a href="#services">{menu[lang][1]}</a>
-//                    <a href="#work">{menu[lang][2]}</a>
-//                    <a href="#contact">{menu[lang][3]}</a>
-//                </nav>
-
-//                {/* Language Toggle */}
-//                <button
-//                    className="lang-btn"
-//                    onClick={() => setLang(lang === "en" ? "ar" : "en")}
-//                    aria-label={lang === "en" ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}
-//                >
-//                    {lang === "en" ? "AR" : "EN"}
-//                </button>
-
-//                {/* Call Button */}
-//                <a href="tel:+966597507224" className="call-btn" aria-label={lang === "ar" ? "اتصل الان" : "Call now"}>
-//                    📞
-//                </a>
-
-//                {/* Mobile Menu */}
-//                <button
-//                    className={`menu ${open ? 'open' : ''}`}
-//                    onClick={() => {
-//                        setOpen(!open);
-//                        // lock background scroll when menu open
-//                        if (!open) document.body.style.overflow = 'hidden';
-//                        else document.body.style.overflow = '';
-//                    }}
-//                    aria-expanded={open}
-//                    aria-label={open ? (lang === "ar" ? "اغلاق القائمة" : "Close menu") : (lang === "ar" ? "فتح القائمة" : "Open menu")}
-//                >
-//                    ☰
-//                </button>
-//            </div>
-
-//        </header>
-//    );
-//};
-
-//export default Navbar;
