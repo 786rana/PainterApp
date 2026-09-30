@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { CloseIcon, MenuIcon } from "./Icons";
+import { SITE } from "../data/site";
 import { categoryHref, serviceCategories, serviceHref } from "../data/services";
 
 type Lang = "en" | "ar";
@@ -41,6 +43,18 @@ const Navbar = ({
         return () => { document.body.style.overflow = ""; };
     }, [open]);
 
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setOpen(false);
+                setServicesOpen(false);
+                setMobileServicesOpen(false);
+            }
+        };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, []);
+
     const closeMenu = () => {
         setOpen(false);
         setServicesOpen(false);
@@ -73,6 +87,9 @@ const Navbar = ({
                         className={`nav-dropdown ${servicesOpen ? "open" : ""}`}
                         onMouseEnter={() => setServicesOpen(true)}
                         onMouseLeave={() => setServicesOpen(false)}
+                        onBlur={(e) => {
+                            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setServicesOpen(false);
+                        }}
                     >
                         <button
                             type="button"
@@ -165,7 +182,7 @@ const Navbar = ({
                         {lang === "en" ? "عربي" : "EN"}
                     </button>
 
-                    <a href="tel:+966597507224" className="quote-btn">
+                    <a href={SITE.phoneHref} className="quote-btn">
                         {lang === "ar" ? "اتصل الآن" : "Call Now"}
                     </a>
 
@@ -175,7 +192,7 @@ const Navbar = ({
                         aria-expanded={open}
                         aria-label={open ? "Close menu" : "Open menu"}
                     >
-                        {open ? "✕" : "☰"}
+                        {open ? <CloseIcon /> : <MenuIcon />}
                     </button>
                 </div>
             </header>

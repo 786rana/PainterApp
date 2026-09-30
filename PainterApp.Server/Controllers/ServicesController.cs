@@ -1,6 +1,6 @@
-﻿
+
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PainterApp.Server.Application.CQRS.Command;
 using PainterApp.Server.Application.CQRS.Queries;
@@ -22,10 +22,12 @@ namespace PainterApp.Server.Controllers
         public async Task<IActionResult> Get()
             => Ok(await _mediator.Send(new GetServicesQuery()));
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateServiceCommand command)
             => Ok(await _mediator.Send(command));
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateServiceCommand command)
         {
@@ -37,6 +39,7 @@ namespace PainterApp.Server.Controllers
             return Ok(await _mediator.Send(command));
         } 
            
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
 

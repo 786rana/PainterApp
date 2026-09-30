@@ -1,4 +1,4 @@
-﻿using PainterApp.Server.Domain.Entites;
+using PainterApp.Server.Domain.Entites;
 
 namespace PainterApp.Server.Common.Interfaces
 {
@@ -6,7 +6,7 @@ namespace PainterApp.Server.Common.Interfaces
     {
         Task<int> Create(Service service);
         Task<List<Service>> GetAll();
-        Task Update(Service service);
-        Task Delete(int id);
+        Task<int> Update(Service service);
+        Task<int> Delete(int id);
     }
 }

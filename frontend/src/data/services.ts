@@ -15,7 +15,7 @@ export const serviceImages = {
     wallpaperRemoval: img("photo-1616486338812-3dadae4b4ace"),
     roofPaint: img("photo-1600585154340-be6161a56a0c"),
     fauxPaint: img("photo-1618221195710-dd6b41faaea6"),
-    doorPaint: img("photo-1558036117-15b86f7d3e7f"),
+    doorPaint: img("photo-1562259949-e8e7689d7828"),
     ceilingDesign: img("photo-1600607687939-ce8a6c25118c"),
     gypsumCeiling: img("photo-1595846519845-68e298c2edd8"),
     falseCeiling: img("photo-1578662996442-48f60103fc96"),

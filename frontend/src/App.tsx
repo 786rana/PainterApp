@@ -5,7 +5,9 @@ import Testimonials from "./components/Testimonials";
 import { Helmet } from "react-helmet-async";
 import Footer from "./components/Footer";
 import "./App.css";
-import { BRAND_NAME, categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
+import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
+import { SITE } from "./data/site";
+import { categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
 
 const whyItems = [
     {
@@ -96,20 +98,35 @@ const content = {
 };
 
 const App = () => {
-    const [lang, setLang] = useState<"en" | "ar">("en");
+    const [lang, setLang] = useState<"en" | "ar">(() => {
+        try {
+            const saved = localStorage.getItem("lang");
+            if (saved === "en" || saved === "ar") return saved;
+        } catch { /* storage unavailable */ }
+        return navigator.language?.toLowerCase().startsWith("ar") ? "ar" : "en";
+    });
     const t = content[lang];
+    const isAr = lang === "ar";
 
     useEffect(() => {
-        document.title = BRAND_NAME[lang];
-    }, [lang]);
+        document.documentElement.lang = lang;
+        document.documentElement.dir = isAr ? "rtl" : "ltr";
+        try { localStorage.setItem("lang", lang); } catch { /* ignore */ }
+    }, [lang, isAr]);
 
     return (
         <div className="app" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <Helmet>
-                <title>Zaman Paints & Decor | Painting Services in Saudi Arabia Riyadh</title>
+            <Helmet htmlAttributes={{ lang, dir: isAr ? "rtl" : "ltr" }}>
+                <title>
+                    {isAr
+                        ? "زمان للدهانات والديكور | خدمات دهان في الرياض والسعودية"
+                        : "Zaman Paints & Decor | Painting Services in Saudi Arabia Riyadh"}
+                </title>
                 <meta
                     name="description"
-                    content="Professional painting services in Saudi Arabia including interior painting, exterior painting, villa painting, wall painting, and decoration services in Riyadh, Jeddah, and KSA."
+                    content={isAr
+                        ? "خدمات دهان احترافية في السعودية تشمل الدهان الداخلي والخارجي ودهان الفلل والديكور وأسقف الجبس في الرياض وجدة."
+                        : "Professional painting services in Saudi Arabia including interior painting, exterior painting, villa painting, wall painting, and decoration services in Riyadh, Jeddah, and KSA."}
                 />
                 <meta
                     name="keywords"
@@ -117,13 +134,18 @@ const App = () => {
                 />
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://zamanpaints.com" />
-                <meta property="og:title" content="Zaman Paints & Decor Saudi Arabia" />
-                <meta property="og:description" content="Best painting services in Riyadh and Saudi Arabia" />
+                <meta property="og:title" content={isAr ? "زمان للدهانات والديكور" : "Zaman Paints & Decor Saudi Arabia"} />
+                <meta property="og:locale" content={isAr ? "ar_SA" : "en_US"} />
+                <meta property="og:description" content={isAr ? "أفضل خدمات الدهان في الرياض والسعودية" : "Best painting services in Riyadh and Saudi Arabia"} />
                 <meta property="og:type" content="website" />
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
 
+            <a href="#main" className="skip-link">
+                {isAr ? "تخطي إلى المحتوى" : "Skip to content"}
+            </a>
             <Navbar lang={lang} setLang={setLang} />
+            <main id="main" tabIndex={-1}>
             <HeroSlider lang={lang} />
 
             <section className="trust">
@@ -184,8 +206,12 @@ const App = () => {
                                     </h3>
                                     <p className="service-category-sub">
                                         {category.id === "painting"
-                                            ? (lang === "ar" ? "10 خدمات دهان وتشطيب احترافية" : "10 professional painting & finishing services")
-                                            : (lang === "ar" ? "4 خدمات تصميم وتركيب أسقف" : "4 ceiling design & installation services")}
+                                            ? (lang === "ar"
+                                                ? `${category.services.length} خدمات دهان وتشطيب احترافية`
+                                                : `${category.services.length} professional painting & finishing services`)
+                                            : (lang === "ar"
+                                                ? `${category.services.length} خدمات تصميم وتركيب أسقف`
+                                                : `${category.services.length} ceiling design & installation services`)}
                                     </p>
                                 </div>
                             </div>
@@ -267,12 +293,12 @@ const App = () => {
                     <h2>{t.ctaTitle}</h2>
                     <p>{t.ctaSub}</p>
                     <a
-                        href="https://wa.me/966597507224"
+                        href={SITE.whatsappHref}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn"
                     >
-                        💬 {t.quote}
+                        <WhatsAppIcon /> {t.quote}
                     </a>
                 </div>
             </section>
@@ -286,20 +312,20 @@ const App = () => {
                     </div>
                     <div className="contact-grid">
                         <div className="contact-card">
-                            <div className="contact-icon">📞</div>
+                            <div className="contact-icon"><PhoneIcon /></div>
                             <h3>{t.phone}</h3>
-                            <a href="tel:+966597507224">+966 597507224</a>
+                            <a href={SITE.phoneHref}><span className="ltr">{SITE.phoneDisplay}</span></a>
                         </div>
                         <div className="contact-card">
-                            <div className="contact-icon">📍</div>
+                            <div className="contact-icon"><PinIcon /></div>
                             <h3>{t.locationLabel}</h3>
                             <p>{t.location}</p>
                         </div>
                         <div className="contact-card">
-                            <div className="contact-icon">💬</div>
+                            <div className="contact-icon"><WhatsAppIcon /></div>
                             <h3>{t.chat}</h3>
                             <a
-                                href="https://wa.me/966597507224"
+                                href={SITE.whatsappHref}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -309,25 +335,27 @@ const App = () => {
                     </div>
                     <div style={{ textAlign: "center" }}>
                         <a
-                            href="https://wa.me/966597507224"
+                            href={SITE.whatsappHref}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="whatsapp"
                         >
-                            💬 {t.whatsapp}
+                            <WhatsAppIcon /> {t.whatsapp}
                         </a>
                     </div>
                 </div>
             </section>
 
+            </main>
+
             <a
-                href="https://wa.me/966597507224"
+                href={SITE.whatsappHref}
                 className="floating-whatsapp"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="WhatsApp"
+                aria-label={t.whatsapp}
             >
-                💬
+                <WhatsAppIcon />
             </a>
 
             <section className="map">

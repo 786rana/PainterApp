@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PainterApp.Server.Application.CQRS.Command.ProjectWork;
 using PainterApp.Server.Application.CQRS.Queries.ProjectWorks;
@@ -22,12 +23,14 @@ namespace PainterApp.Server.Controllers
             return Ok(await _mediator.Send(new GetAllProjectsQuery()));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

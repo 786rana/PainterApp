@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Dapper;
 using PainterApp.Server.Common.Interfaces;
 using PainterApp.Server.Domain.Entites;
@@ -27,15 +27,15 @@ namespace PainterApp.Server.Infrastructure.Repositories
             return (await _db.QueryAsync<Service>("SELECT * FROM Services")).ToList();
         }
 
-        public async Task Update(Service s)
+        public async Task<int> Update(Service s)
         {
             var sql = "UPDATE Services SET Title=@Title, Description=@Description, Price=@Price WHERE Id=@Id";
-            await _db.ExecuteAsync(sql, s);
+            return await _db.ExecuteAsync(sql, s);
         }
 
-        public async Task Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            await _db.ExecuteAsync("DELETE FROM Services WHERE Id=@id", new { id });
+            return await _db.ExecuteAsync("DELETE FROM Services WHERE Id=@id", new { id });
         }
     }
 }
