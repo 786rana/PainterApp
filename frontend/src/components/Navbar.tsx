@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
+import type { AuthMode } from "./AuthModal";
 import { useActiveSection } from "../hooks/useScrollEffects";
 import { CloseIcon, MenuIcon } from "./Icons";
 import { SITE } from "../data/site";
@@ -24,10 +26,13 @@ const navLinks = {
 const Navbar = ({
     lang,
     setLang,
+    onAuth,
 }: {
     lang: Lang;
     setLang: (l: Lang) => void;
+    onAuth: (mode: AuthMode) => void;
 }) => {
+    const { user, logout } = useAuth();
     const active = useActiveSection(["home", "services", "work", "about", "contact"]);
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -178,9 +183,50 @@ const Navbar = ({
                             {link.label}
                         </a>
                     ))}
+
+                    <div className="nav-mobile-account">
+                        {user ? (
+                            <>
+                                <span className="account-email" dir="ltr">{user.email}</span>
+                                <button type="button" onClick={() => { logout(); closeMenu(); }}>
+                                    {lang === "ar" ? "تسجيل الخروج" : "Log out"}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button type="button" onClick={() => { closeMenu(); onAuth("login"); }}>
+                                    {lang === "ar" ? "تسجيل الدخول" : "Log in"}
+                                </button>
+                                <button type="button" className="solid" onClick={() => { closeMenu(); onAuth("register"); }}>
+                                    {lang === "ar" ? "إنشاء حساب" : "Create account"}
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </nav>
 
                 <div className="nav-actions">
+                    {user ? (
+                        <div className="account">
+                            <span className="account-avatar" aria-hidden="true">
+                                {user.email.charAt(0).toUpperCase()}
+                            </span>
+                            <span className="account-email" dir="ltr">{user.email}</span>
+                            <button type="button" className="account-logout" onClick={logout}>
+                                {lang === "ar" ? "خروج" : "Log out"}
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="auth-links">
+                            <button type="button" className="auth-link" onClick={() => onAuth("login")}>
+                                {lang === "ar" ? "دخول" : "Log in"}
+                            </button>
+                            <button type="button" className="auth-link auth-link--solid" onClick={() => onAuth("register")}>
+                                {lang === "ar" ? "إنشاء حساب" : "Sign up"}
+                            </button>
+                        </div>
+                    )}
+
                     <button
                         className="lang-btn"
                         onClick={() => setLang(lang === "en" ? "ar" : "en")}

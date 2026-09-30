@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AuthModal, { type AuthMode } from "./components/AuthModal";
 import Navbar from "./components/Navbar";
 import HeroSlider from "./components/HeroSlider";
 import Testimonials from "./components/Testimonials";
@@ -149,6 +150,8 @@ const App = () => {
     });
     const t = content[lang];
     const isAr = lang === "ar";
+    const [authMode, setAuthMode] = useState<AuthMode | null>(null);
+    const closeAuth = useCallback(() => setAuthMode(null), []);
 
     useReveal(lang);
 
@@ -188,7 +191,10 @@ const App = () => {
             <a href="#main" className="skip-link">
                 {isAr ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
-            <Navbar lang={lang} setLang={setLang} />
+            <Navbar lang={lang} setLang={setLang} onAuth={setAuthMode} />
+            {authMode && (
+                <AuthModal mode={authMode} lang={lang} onModeChange={setAuthMode} onClose={closeAuth} />
+            )}
             <main id="main" tabIndex={-1}>
             <HeroSlider lang={lang} />
 
