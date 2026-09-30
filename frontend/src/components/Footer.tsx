@@ -1,3 +1,4 @@
+import { SITE } from "../data/site";
 import { serviceCategories } from "../data/services";
 
 type FooterProps = {
@@ -46,11 +47,11 @@ const Footer = ({ lang }: FooterProps) => {
 
                 <div className="footer-box">
                     <h3>{isAr ? "اتصل" : "Contact"}</h3>
-                    <p>📞 +966 597507224</p>
+                    <p>📞 {SITE.phoneDisplay}</p>
                     <p>📍 {isAr ? "الرياض، السعودية" : "Riyadh, Saudi Arabia"}</p>
                     <a
                         className="whatsapp-btn"
-                        href="https://wa.me/966597507224"
+                        href={SITE.whatsappHref}
                         target="_blank"
                         rel="noopener noreferrer"
                     >

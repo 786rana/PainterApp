@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SITE } from "../data/site";
 import { categoryHref, serviceCategories, serviceHref } from "../data/services";
 
 type Lang = "en" | "ar";
@@ -165,7 +166,7 @@ const Navbar = ({
                         {lang === "en" ? "عربي" : "EN"}
                     </button>
 
-                    <a href="tel:+966597507224" className="quote-btn">
+                    <a href={SITE.phoneHref} className="quote-btn">
                         {lang === "ar" ? "اتصل الآن" : "Call Now"}
                     </a>
 
