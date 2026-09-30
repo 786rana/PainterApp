@@ -48,7 +48,7 @@ const Footer = ({ lang }: FooterProps) => {
 
                 <div className="footer-box">
                     <h3>{isAr ? "اتصل" : "Contact"}</h3>
-                    <p><PhoneIcon /> {SITE.phoneDisplay}</p>
+                    <p><PhoneIcon /> <span className="ltr">{SITE.phoneDisplay}</span></p>
                     <p><PinIcon /> {isAr ? "الرياض، السعودية" : "Riyadh, Saudi Arabia"}</p>
                     <a
                         className="whatsapp-btn"

@@ -314,7 +314,7 @@ const App = () => {
                         <div className="contact-card">
                             <div className="contact-icon"><PhoneIcon /></div>
                             <h3>{t.phone}</h3>
-                            <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>
+                            <a href={SITE.phoneHref}><span className="ltr">{SITE.phoneDisplay}</span></a>
                         </div>
                         <div className="contact-card">
                             <div className="contact-icon"><PinIcon /></div>

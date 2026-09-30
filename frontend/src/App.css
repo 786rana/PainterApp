@@ -116,7 +116,14 @@ img {
   height: 44px;
 }
 
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .logo-text h2 {
+  margin: 0;
   font-size: 18px;
   font-weight: 700;
   color: #fff;
@@ -207,6 +214,8 @@ img {
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
   padding: 12px 0;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -922,8 +931,8 @@ img {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--primary);
-  background: rgba(255, 123, 0, 0.15);
+  color: var(--dark);
+  background: var(--primary);
   padding: 4px 10px;
   border-radius: 999px;
   margin-bottom: 8px;
@@ -1338,6 +1347,14 @@ img {
     transition: right 0.35s ease;
     box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
     z-index: 1001;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* keep lang/close buttons clickable above the open panel */
+  .nav-actions {
+    position: relative;
+    z-index: 1002;
   }
 
   .nav.active {
@@ -1433,7 +1450,7 @@ img {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 999;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s ease;
@@ -1540,3 +1557,10 @@ button:focus-visible {
 .floating-whatsapp svg { width: 30px; height: 30px; }
 .whatsapp svg, .whatsapp-btn svg, .btn svg, .footer-box p svg { vertical-align: -0.15em; margin-inline-end: 4px; }
 .menu-btn svg { width: 24px; height: 24px; }
+
+/* Keep phone numbers readable in RTL */
+.ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
