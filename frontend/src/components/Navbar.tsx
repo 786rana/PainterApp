@@ -188,6 +188,9 @@ const Navbar = ({
                         {user ? (
                             <>
                                 <span className="account-email" dir="ltr">{user.email}</span>
+                                <a href="#/admin" className="mobile-dashboard" onClick={closeMenu}>
+                                    {lang === "ar" ? "لوحة التحكم" : "Dashboard"}
+                                </a>
                                 <button type="button" onClick={() => { logout(); closeMenu(); }}>
                                     {lang === "ar" ? "تسجيل الخروج" : "Log out"}
                                 </button>
@@ -212,6 +215,9 @@ const Navbar = ({
                                 {user.email.charAt(0).toUpperCase()}
                             </span>
                             <span className="account-email" dir="ltr">{user.email}</span>
+                            <a href="#/admin" className="account-logout">
+                                {lang === "ar" ? "لوحة التحكم" : "Dashboard"}
+                            </a>
                             <button type="button" className="account-logout" onClick={logout}>
                                 {lang === "ar" ? "خروج" : "Log out"}
                             </button>

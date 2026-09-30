@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import AuthModal, { type AuthMode } from "./components/AuthModal";
+import ContactForm from "./components/ContactForm";
 import Navbar from "./components/Navbar";
 import HeroSlider from "./components/HeroSlider";
 import Testimonials from "./components/Testimonials";
@@ -10,6 +11,9 @@ import "./theme.css";
 import CountUp from "./components/CountUp";
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
 import { useReveal } from "./hooks/useScrollEffects";
+import { getProjects } from "./api/projectApi";
+import Admin from "./pages/Admin";
+import type { Project } from "./types/project";
 import { SITE, whatsappQuoteHref } from "./data/site";
 import { categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
 
@@ -153,13 +157,53 @@ const App = () => {
     const [authMode, setAuthMode] = useState<AuthMode | null>(null);
     const closeAuth = useCallback(() => setAuthMode(null), []);
 
-    useReveal(lang);
+    const [route, setRoute] = useState(() => window.location.hash);
+    const isAdminRoute = route === "#/admin";
+    const [apiProjects, setApiProjects] = useState<Project[]>([]);
+
+    useReveal(`${lang}-${isAdminRoute}`);
+
+    useEffect(() => {
+        const onHash = () => setRoute(window.location.hash);
+        window.addEventListener("hashchange", onHash);
+        return () => window.removeEventListener("hashchange", onHash);
+    }, []);
+
+    // Projects added in the dashboard replace the sample gallery. If the API is
+    // unreachable (e.g. a static deployment) the sample gallery stays.
+    useEffect(() => {
+        getProjects().then(setApiProjects).catch(() => setApiProjects([]));
+    }, []);
+
+    const galleryItems = apiProjects.length
+        ? apiProjects.map((p) => ({
+              title: { en: p.title, ar: p.title },
+              desc: { en: p.description, ar: p.description },
+              img: p.imageUrl,
+              imageName: `api-${p.id}`,
+          }))
+        : projects;
 
     useEffect(() => {
         document.documentElement.lang = lang;
         document.documentElement.dir = isAr ? "rtl" : "ltr";
         try { localStorage.setItem("lang", lang); } catch { /* ignore */ }
     }, [lang, isAr]);
+
+    if (isAdminRoute) {
+        return (
+            <div className="app" dir={isAr ? "rtl" : "ltr"}>
+                <Helmet>
+                    <title>{isAr ? "لوحة التحكم | زمان" : "Dashboard | Zaman Paints & Decor"}</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
+                <Admin lang={lang} onLogin={() => setAuthMode("login")} />
+                {authMode && (
+                    <AuthModal mode={authMode} lang={lang} onModeChange={setAuthMode} onClose={closeAuth} />
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="app" dir={lang === "ar" ? "rtl" : "ltr"}>
@@ -335,7 +379,7 @@ const App = () => {
                         <p>{t.workSub}</p>
                     </div>
                     <div className="gallery">
-                        {projects.map((p, i) => {
+                        {galleryItems.map((p, i) => {
                             const title = lang === "ar" ? p.title.ar : p.title.en;
                             const desc = lang === "ar" ? p.desc.ar : p.desc.en;
                             return (
@@ -418,6 +462,8 @@ const App = () => {
                             <WhatsAppIcon /> {t.whatsapp}
                         </a>
                     </div>
+
+                    <ContactForm lang={lang} />
                 </div>
             </section>
 

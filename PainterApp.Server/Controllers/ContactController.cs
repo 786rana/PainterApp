@@ -1,6 +1,8 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PainterApp.Server.Application.CQRS.Command.Contact;
+using PainterApp.Server.Application.CQRS.Queries.Contact;
 
 namespace PainterApp.Server.Controllers
 {
@@ -13,6 +15,13 @@ namespace PainterApp.Server.Controllers
         public ContactController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _mediator.Send(new GetContactsQuery()));
         }
 
         [HttpPost]
