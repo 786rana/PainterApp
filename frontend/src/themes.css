@@ -3,83 +3,6 @@
    Selected with <html data-theme="midnight|fresh">. Loaded after theme.css.
    ===================================================================== */
 
-/* ---------- Switcher (preview tool) ---------- */
-.design-switcher {
-  position: fixed;
-  inset-inline-start: 16px;
-  bottom: 16px;
-  z-index: 2500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px;
-  background: rgba(16, 24, 40, 0.92);
-  backdrop-filter: blur(10px);
-  border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  color: #fff;
-  font-size: 13px;
-}
-
-.design-switcher > span {
-  padding: 0 8px 0 12px;
-  font-weight: 600;
-  opacity: 0.8;
-}
-
-.design-switcher button {
-  min-height: 36px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.design-switcher button[aria-pressed="true"] {
-  background: #fff;
-  color: #101828;
-}
-
-.design-switcher .design-x {
-  width: 36px;
-  padding: 0;
-  opacity: 0.7;
-}
-
-.design-reopen {
-  position: fixed;
-  inset-inline-start: 16px;
-  bottom: 16px;
-  z-index: 2500;
-  min-height: 40px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(16, 24, 40, 0.92);
-  color: #fff;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-@media (max-width: 900px) {
-  .design-switcher,
-  .design-reopen {
-    bottom: 84px;
-  }
-}
-
-@media (max-width: 420px) {
-  .design-switcher > span {
-    display: none;
-  }
-}
-
 /* =====================================================================
    B — MIDNIGHT: confident navy & electric blue, squarer shapes, dark header
    ===================================================================== */
@@ -374,4 +297,277 @@ html[data-theme="fresh"] .footer {
   html[data-theme="fresh"] .trust {
     border-radius: var(--radius-lg);
   }
+}
+
+/* =====================================================================
+   SETTINGS PAGE + navbar settings button
+   ===================================================================== */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  transform: rotate(-12deg);
+}
+
+html[data-theme="midnight"] .icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+html[data-theme="midnight"] .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--primary-soft);
+}
+
+@media (max-width: 900px) {
+  /* the same link lives inside the mobile menu */
+  .nav-actions .icon-btn {
+    display: none;
+  }
+}
+
+.settings {
+  max-width: 980px;
+}
+
+.settings h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.settings-section {
+  margin-top: 36px;
+}
+
+.settings-sub {
+  color: var(--text-muted);
+  margin: 4px 0 18px;
+}
+
+.settings-profile h2 {
+  margin-bottom: 14px;
+}
+
+.settings-profile-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.account-avatar.big {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  flex: none;
+}
+
+.settings-profile-body {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.settings-profile-body span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.settings-profile-body strong {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.settings-profile-body small {
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.settings-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-login {
+  width: auto;
+  padding: 0 28px;
+  min-height: 46px;
+}
+
+/* ---------- Design picker ---------- */
+.design-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.design-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  text-align: start;
+  font: inherit;
+  color: var(--text);
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.design-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.design-card.on {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.16);
+}
+
+.design-preview {
+  display: grid;
+  grid-template-rows: 22px 82px auto;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.dp-header i {
+  width: 34px;
+  height: 10px;
+}
+
+.dp-hero {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 0 14px;
+  border-radius: 8px;
+}
+
+.dp-hero b {
+  width: 44px;
+  height: 7px;
+  border-radius: 99px;
+}
+
+.dp-hero em {
+  width: 70%;
+  height: 9px;
+  border-radius: 99px;
+}
+
+.dp-hero u {
+  width: 54px;
+  height: 14px;
+  text-decoration: none;
+}
+
+.dp-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.dp-cards s {
+  display: block;
+  height: 30px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  text-decoration: none;
+}
+
+.design-meta {
+  display: grid;
+  gap: 6px;
+}
+
+.design-meta strong {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.design-meta > span {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.design-meta > .design-badge {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.design-meta > .design-badge.on {
+  background: var(--primary);
+  color: #fff;
+}
+
+.lang-choice {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.lang-choice button {
+  min-height: 42px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lang-choice button.on {
+  background: var(--primary);
+  color: #fff;
 }

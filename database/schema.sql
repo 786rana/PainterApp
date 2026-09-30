@@ -45,3 +45,8 @@ IF COL_LENGTH('dbo.Services', 'Category') IS NULL
 IF COL_LENGTH('dbo.Services', 'SortOrder') IS NULL
     ALTER TABLE dbo.Services ADD SortOrder INT NOT NULL CONSTRAINT DF_Services_SortOrder DEFAULT 0;
 GO
+
+-- ---- Migration: per-user site design preference (NULL = not chosen) ----
+IF COL_LENGTH('dbo.Users', 'Theme') IS NULL
+    ALTER TABLE dbo.Users ADD Theme NVARCHAR(20) NULL;
+GO

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import type { AuthMode } from "./AuthModal";
 import { useActiveSection } from "../hooks/useScrollEffects";
-import { CloseIcon, MenuIcon } from "./Icons";
+import { CloseIcon, MenuIcon, SettingsIcon } from "./Icons";
 import { SITE } from "../data/site";
 import { useServiceCategories } from "../data/ServicesContext";
 import { categoryHref, serviceHref } from "../data/services";
@@ -187,6 +187,9 @@ const Navbar = ({
                     ))}
 
                     <div className="nav-mobile-account">
+                        <a href="#/settings" className="mobile-dashboard" onClick={closeMenu}>
+                            {lang === "ar" ? "الإعدادات والمظهر" : "Settings & appearance"}
+                        </a>
                         {user ? (
                             <>
                                 <span className="account-email" dir="ltr">{user.email}</span>
@@ -234,6 +237,15 @@ const Navbar = ({
                             </button>
                         </div>
                     )}
+
+                    <a
+                        href="#/settings"
+                        className="icon-btn"
+                        aria-label={lang === "ar" ? "الإعدادات والمظهر" : "Settings and appearance"}
+                        title={lang === "ar" ? "الإعدادات والمظهر" : "Settings and appearance"}
+                    >
+                        <SettingsIcon />
+                    </a>
 
                     <button
                         className="lang-btn"

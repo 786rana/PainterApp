@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import AuthModal, { type AuthMode } from "./components/AuthModal";
 import ContactForm from "./components/ContactForm";
-import DesignSwitcher, { useDesign } from "./components/DesignSwitcher";
 import Navbar from "./components/Navbar";
 import HeroSlider from "./components/HeroSlider";
 import Testimonials from "./components/Testimonials";
@@ -15,6 +14,7 @@ import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
 import { useReveal } from "./hooks/useScrollEffects";
 import { getProjects } from "./api/projectApi";
 import Admin from "./pages/Admin";
+import Settings from "./pages/Settings";
 import type { Project } from "./types/project";
 import { SITE, whatsappQuoteHref } from "./data/site";
 import { useServiceCategories } from "./data/ServicesContext";
@@ -161,12 +161,12 @@ const App = () => {
     const [authMode, setAuthMode] = useState<AuthMode | null>(null);
     const closeAuth = useCallback(() => setAuthMode(null), []);
 
-    const [design, setDesign] = useDesign();
     const [route, setRoute] = useState(() => window.location.hash);
     const isAdminRoute = route === "#/admin";
+    const isSettingsRoute = route === "#/settings";
     const [apiProjects, setApiProjects] = useState<Project[]>([]);
 
-    useReveal(`${lang}-${isAdminRoute}`);
+    useReveal(`${lang}-${route === "#/admin" || route === "#/settings"}`);
 
     useEffect(() => {
         const onHash = () => setRoute(window.location.hash);
@@ -194,6 +194,21 @@ const App = () => {
         document.documentElement.dir = isAr ? "rtl" : "ltr";
         try { localStorage.setItem("lang", lang); } catch { /* ignore */ }
     }, [lang, isAr]);
+
+    if (isSettingsRoute) {
+        return (
+            <div className="app" dir={isAr ? "rtl" : "ltr"}>
+                <Helmet>
+                    <title>{isAr ? "الإعدادات | زمان" : "Settings | Zaman Paints & Decor"}</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
+                <Settings lang={lang} setLang={setLang} onLogin={() => setAuthMode("login")} />
+                {authMode && (
+                    <AuthModal mode={authMode} lang={lang} onModeChange={setAuthMode} onClose={closeAuth} />
+                )}
+            </div>
+        );
+    }
 
     if (isAdminRoute) {
         return (
@@ -520,7 +535,6 @@ const App = () => {
             </div>
 
             <Footer lang={lang} />
-            <DesignSwitcher design={design} onChange={setDesign} />
         </div>
     );
 };

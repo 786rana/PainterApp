@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Dapper;
 using PainterApp.Server.Common.Interfaces;
 using PainterApp.Server.Domain.Entites;
@@ -18,6 +18,16 @@ namespace PainterApp.Server.Infrastructure.Repositories
         {
             var sql = "SELECT * FROM Users WHERE Email = @email";
             return await _db.QueryFirstOrDefaultAsync<User>(sql, new { email });
+        }
+
+        public async Task<User?> GetById(int id)
+        {
+            return await _db.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE Id = @id", new { id });
+        }
+
+        public async Task<int> UpdateTheme(int id, string theme)
+        {
+            return await _db.ExecuteAsync("UPDATE Users SET Theme = @theme WHERE Id = @id", new { id, theme });
         }
 
         public async Task<int> Create(User user)
