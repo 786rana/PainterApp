@@ -8,6 +8,7 @@ using Microsoft.OpenApi;
 using PainterApp.Server.Application.Handlers.CommandHandlers;
 using PainterApp.Server.Common.Interfaces;
 using PainterApp.Server.Common.Middleware;
+using PainterApp.Server.Infrastructure.Db;
 using PainterApp.Server.Infrastructure.Repositories;
 using PainterApp.Server.Infrastructure.Services;
 
@@ -74,8 +75,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
+        // Entries may use a wildcard subdomain, e.g. "https://*.vercel.app" for preview deployments.
         if (allowedOrigins.Length > 0)
-            policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins(allowedOrigins)
+                  .SetIsOriginAllowedToAllowWildcardSubdomains()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
     });
 });
 #endregion
@@ -110,6 +115,9 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Optional: create/upgrade tables and the first admin on start-up (hosted environments)
+await DatabaseInitializer.RunAsync(app.Configuration, app.Logger);
+
 #region Middleware Pipeline
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -130,6 +138,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Lightweight liveness probe for hosting platforms (always on)
+app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
 app.MapDefaultEndpoints();
 #endregion
 
