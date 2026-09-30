@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import CallButton from "./CallButton";
 import type { AuthMode } from "./AuthModal";
 import { useActiveSection } from "../hooks/useScrollEffects";
 import { CloseIcon, MenuIcon, SettingsIcon } from "./Icons";
-import { SITE } from "../data/site";
 import { useServiceCategories } from "../data/ServicesContext";
 import { categoryHref, serviceHref } from "../data/services";
 
@@ -255,9 +255,7 @@ const Navbar = ({
                         {lang === "en" ? "عربي" : "EN"}
                     </button>
 
-                    <a href={SITE.phoneHref} className="quote-btn">
-                        {lang === "ar" ? "اتصل الآن" : "Call Now"}
-                    </a>
+                    <CallButton lang={lang} />
 
                     <button
                         className="menu-btn"

@@ -1573,3 +1573,83 @@ html[lang="ar"] .cta h2 {
 .footer-box a:hover {
   color: var(--primary);
 }
+
+/* ---------- Call button popover (computers have no tel: handler) ---------- */
+.call-wrap {
+  position: relative;
+}
+
+.call-pop {
+  position: absolute;
+  top: calc(100% + 12px);
+  inset-inline-end: 0;
+  z-index: 1200;
+  width: 280px;
+  padding: 18px;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: grid;
+  gap: 8px;
+  animation: authRise 0.18s ease;
+}
+
+.call-pop strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.call-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-decoration: none;
+  user-select: all;
+}
+
+.call-number svg {
+  width: 20px;
+  height: 20px;
+}
+
+.call-pop p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.call-pop-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.call-pop-actions .account-logout,
+.call-pop-wa {
+  min-height: 42px;
+  justify-content: center;
+  width: 100%;
+}
+
+.call-pop-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.call-pop-wa svg {
+  width: 18px;
+  height: 18px;
+}
