@@ -1506,3 +1506,37 @@ img {
     text-align: center;
   }
 }
+
+/* ================= ACCESSIBILITY ================= */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 2000;
+  padding: 10px 16px;
+  background: var(--dark);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: top var(--transition);
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+#main:focus {
+  outline: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* SVG icons inherit text colour and sit inline with text */
+.contact-icon svg { width: 26px; height: 26px; color: var(--primary); }
+.floating-whatsapp svg { width: 30px; height: 30px; }
+.whatsapp svg, .whatsapp-btn svg, .btn svg, .footer-box p svg { vertical-align: -0.15em; margin-inline-end: 4px; }
+.menu-btn svg { width: 24px; height: 24px; }

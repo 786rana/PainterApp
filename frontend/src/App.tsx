@@ -5,6 +5,7 @@ import Testimonials from "./components/Testimonials";
 import { Helmet } from "react-helmet-async";
 import Footer from "./components/Footer";
 import "./App.css";
+import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
 import { SITE } from "./data/site";
 import { categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
 
@@ -140,7 +141,11 @@ const App = () => {
                 <meta name="twitter:card" content="summary_large_image" />
             </Helmet>
 
+            <a href="#main" className="skip-link">
+                {isAr ? "تخطي إلى المحتوى" : "Skip to content"}
+            </a>
             <Navbar lang={lang} setLang={setLang} />
+            <main id="main" tabIndex={-1}>
             <HeroSlider lang={lang} />
 
             <section className="trust">
@@ -293,7 +298,7 @@ const App = () => {
                         rel="noopener noreferrer"
                         className="btn"
                     >
-                        💬 {t.quote}
+                        <WhatsAppIcon /> {t.quote}
                     </a>
                 </div>
             </section>
@@ -307,17 +312,17 @@ const App = () => {
                     </div>
                     <div className="contact-grid">
                         <div className="contact-card">
-                            <div className="contact-icon">📞</div>
+                            <div className="contact-icon"><PhoneIcon /></div>
                             <h3>{t.phone}</h3>
                             <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>
                         </div>
                         <div className="contact-card">
-                            <div className="contact-icon">📍</div>
+                            <div className="contact-icon"><PinIcon /></div>
                             <h3>{t.locationLabel}</h3>
                             <p>{t.location}</p>
                         </div>
                         <div className="contact-card">
-                            <div className="contact-icon">💬</div>
+                            <div className="contact-icon"><WhatsAppIcon /></div>
                             <h3>{t.chat}</h3>
                             <a
                                 href={SITE.whatsappHref}
@@ -335,11 +340,13 @@ const App = () => {
                             rel="noopener noreferrer"
                             className="whatsapp"
                         >
-                            💬 {t.whatsapp}
+                            <WhatsAppIcon /> {t.whatsapp}
                         </a>
                     </div>
                 </div>
             </section>
+
+            </main>
 
             <a
                 href={SITE.whatsappHref}
@@ -348,7 +355,7 @@ const App = () => {
                 rel="noopener noreferrer"
                 aria-label={t.whatsapp}
             >
-                💬
+                <WhatsAppIcon />
             </a>
 
             <section className="map">
