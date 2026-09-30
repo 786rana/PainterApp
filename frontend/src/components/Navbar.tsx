@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useActiveSection } from "../hooks/useScrollEffects";
 import { CloseIcon, MenuIcon } from "./Icons";
 import { SITE } from "../data/site";
 import { categoryHref, serviceCategories, serviceHref } from "../data/services";
@@ -27,6 +28,7 @@ const Navbar = ({
     lang: Lang;
     setLang: (l: Lang) => void;
 }) => {
+    const active = useActiveSection(["home", "services", "work", "about", "contact"]);
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
@@ -78,7 +80,7 @@ const Navbar = ({
                 </a>
 
                 <nav className={`nav ${open ? "active" : ""}`} aria-label="Main navigation">
-                    <a href="#home" onClick={closeMenu}>
+                    <a href="#home" className={active === "home" ? "active" : ""} onClick={closeMenu}>
                         {navLinks[lang][0].label}
                     </a>
 
@@ -93,7 +95,7 @@ const Navbar = ({
                     >
                         <button
                             type="button"
-                            className="nav-dropdown-trigger"
+                            className={`nav-dropdown-trigger ${active === "services" ? "active" : ""}`}
                             aria-expanded={servicesOpen}
                             aria-haspopup="true"
                             onClick={() => setServicesOpen((v) => !v)}
@@ -167,7 +169,12 @@ const Navbar = ({
                     </div>
 
                     {navLinks[lang].slice(1).map((link) => (
-                        <a key={link.href} href={link.href} onClick={closeMenu}>
+                        <a
+                            key={link.href}
+                            href={link.href}
+                            className={active === link.href.slice(1) ? "active" : ""}
+                            onClick={closeMenu}
+                        >
                             {link.label}
                         </a>
                     ))}
