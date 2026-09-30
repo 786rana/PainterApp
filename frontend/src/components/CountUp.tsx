@@ -41,7 +41,7 @@ const CountUp = ({ end, suffix = "", duration = 1400 }: CountUpProps) => {
     }, [end, duration]);
 
     return (
-        <h2 ref={ref}>
+        <h2 ref={ref} dir="ltr">
             {value}
             {suffix}
         </h2>

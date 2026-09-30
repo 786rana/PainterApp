@@ -81,6 +81,15 @@ const HeroSlider = ({ lang }: { lang: Lang }) => {
                         </a>
                     </div>
 
+                    <ul className="hero-points">
+                        {(lang === "ar"
+                            ? ["عرض سعر مجاني", "نخدم الرياض وكل السعودية", "متاحون 7 أيام في الأسبوع"]
+                            : ["Free quotation", "Riyadh & all of KSA", "Available 7 days a week"]
+                        ).map((point) => (
+                            <li key={point}>{point}</li>
+                        ))}
+                    </ul>
+
                     <div className="hero-dots">
                         {slides.map((s, i) => (
                             <button

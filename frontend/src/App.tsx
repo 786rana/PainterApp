@@ -5,6 +5,7 @@ import Testimonials from "./components/Testimonials";
 import { Helmet } from "react-helmet-async";
 import Footer from "./components/Footer";
 import "./App.css";
+import "./theme.css";
 import CountUp from "./components/CountUp";
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
 import { useReveal } from "./hooks/useScrollEffects";
