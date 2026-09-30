@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json;
 
 namespace PainterApp.Server.Common.Middleware
@@ -40,7 +40,7 @@ namespace PainterApp.Server.Common.Middleware
             var response = new
             {
                 success = false,
-                message = ex.Message,
+                message = statusCode == HttpStatusCode.InternalServerError ? "An unexpected error occurred" : ex.Message,
                 statusCode = (int)statusCode
             };
 

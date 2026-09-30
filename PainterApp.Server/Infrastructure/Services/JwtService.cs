@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +19,7 @@ namespace PainterApp.Server.Infrastructure.Services
         public string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+                Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured"))
             );
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

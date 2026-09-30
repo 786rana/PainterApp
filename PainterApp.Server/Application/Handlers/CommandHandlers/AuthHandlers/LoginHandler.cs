@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using PainterApp.Server.Application.CQRS.Command.AuthCommand;
 using PainterApp.Server.Common.Interfaces;
 
@@ -20,7 +20,7 @@ namespace PainterApp.Server.Application.Handlers.CommandHandlers.AuthHandlers
             var user = await _repo.GetByEmail(request.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                throw new Exception("Invalid credentials");
+                throw new UnauthorizedAccessException("Invalid credentials");
 
             return _jwt.GenerateToken(user);
         }
