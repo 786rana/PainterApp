@@ -4,7 +4,8 @@ import type { AuthMode } from "./AuthModal";
 import { useActiveSection } from "../hooks/useScrollEffects";
 import { CloseIcon, MenuIcon } from "./Icons";
 import { SITE } from "../data/site";
-import { categoryHref, serviceCategories, serviceHref } from "../data/services";
+import { useServiceCategories } from "../data/ServicesContext";
+import { categoryHref, serviceHref } from "../data/services";
 
 type Lang = "en" | "ar";
 
@@ -33,6 +34,7 @@ const Navbar = ({
     onAuth: (mode: AuthMode) => void;
 }) => {
     const { user, logout } = useAuth();
+    const { categories: serviceCategories } = useServiceCategories();
     const active = useActiveSection(["home", "services", "work", "about", "contact"]);
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);

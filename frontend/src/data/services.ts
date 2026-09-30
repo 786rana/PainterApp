@@ -37,7 +37,7 @@ export type Service = {
     title: Bilingual;
     desc: Bilingual;
     img: string;
-    imageName: keyof typeof serviceImages;
+    imageName?: keyof typeof serviceImages;
     category: ServiceCategoryId;
 };
 

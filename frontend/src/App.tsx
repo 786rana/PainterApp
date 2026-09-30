@@ -15,7 +15,8 @@ import { getProjects } from "./api/projectApi";
 import Admin from "./pages/Admin";
 import type { Project } from "./types/project";
 import { SITE, whatsappQuoteHref } from "./data/site";
-import { categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
+import { useServiceCategories } from "./data/ServicesContext";
+import { categoryLabel, imageAlt, projects } from "./data/services";
 
 const whyItems = [
     {
@@ -154,6 +155,7 @@ const App = () => {
     });
     const t = content[lang];
     const isAr = lang === "ar";
+    const { categories: serviceCategories } = useServiceCategories();
     const [authMode, setAuthMode] = useState<AuthMode | null>(null);
     const closeAuth = useCallback(() => setAuthMode(null), []);
 

@@ -1,6 +1,6 @@
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "./Icons";
 import { SITE } from "../data/site";
-import { serviceCategories } from "../data/services";
+import { useServiceCategories } from "../data/ServicesContext";
 
 type FooterProps = {
     lang: "en" | "ar";
@@ -8,6 +8,7 @@ type FooterProps = {
 
 const Footer = ({ lang }: FooterProps) => {
     const isAr = lang === "ar";
+    const { categories: serviceCategories } = useServiceCategories();
 
     return (
         <footer className="footer" dir={isAr ? "rtl" : "ltr"}>

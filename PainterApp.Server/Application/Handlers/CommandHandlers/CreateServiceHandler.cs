@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using PainterApp.Server.Application.CQRS.Command;
 using PainterApp.Server.Common.Interfaces;
 using PainterApp.Server.Domain.Entites;
@@ -19,7 +19,12 @@ namespace PainterApp.Server.Application.Handlers.CommandHandlers
             return await _repo.Create(new Service
             {
                 Title = request.Title,
+                TitleAr = request.TitleAr,
                 Description = request.Description,
+                DescriptionAr = request.DescriptionAr,
+                ImageUrl = request.ImageUrl,
+                Category = request.Category,
+                SortOrder = request.SortOrder,
                 Price = request.Price
             });
         }

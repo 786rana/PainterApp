@@ -20,7 +20,12 @@ namespace PainterApp.Server.Application.Handlers.CommandHandlers
             {
                 Id = request.Id,
                 Title = request.Title,
+                TitleAr = request.TitleAr,
                 Description = request.Description,
+                DescriptionAr = request.DescriptionAr,
+                ImageUrl = request.ImageUrl,
+                Category = request.Category,
+                SortOrder = request.SortOrder,
                 Price = request.Price
             });
 
