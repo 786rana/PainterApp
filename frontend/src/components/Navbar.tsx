@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import CallButton from "./CallButton";
+import LogoMark from "./LogoMark";
 import type { AuthMode } from "./AuthModal";
 import { useActiveSection } from "../hooks/useScrollEffects";
 import { CloseIcon, MenuIcon, SettingsIcon } from "./Icons";
@@ -76,10 +77,7 @@ const Navbar = ({
         <>
             <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
                 <a href="#home" className="logo" onClick={closeMenu}>
-                    <img
-                        src="/logo-icon.svg"
-                        alt={lang === "ar" ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}
-                    />
+                    <LogoMark className="logo-mark" decorative />
                     <div className="logo-text">
                         <h2>{lang === "ar" ? "زمان" : "Zaman"}</h2>
                         <span>{lang === "ar" ? "للدهانات والديكور" : "Paints & Decor"}</span>

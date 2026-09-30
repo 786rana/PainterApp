@@ -1,5 +1,6 @@
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "./Icons";
 import { SITE } from "../data/site";
+import LogoMark from "./LogoMark";
 import { useServiceCategories } from "../data/ServicesContext";
 
 type FooterProps = {
@@ -14,7 +15,10 @@ const Footer = ({ lang }: FooterProps) => {
         <footer className="footer" dir={isAr ? "rtl" : "ltr"}>
             <div className="footer-container">
                 <div className="footer-box">
-                    <h2>{isAr ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}</h2>
+                    <div className="footer-brand">
+                        <LogoMark className="logo-mark" decorative />
+                        <h2>{isAr ? "زمان للدهانات والديكور" : "Zaman Paints & Decor"}</h2>
+                    </div>
                     <p>
                         {isAr
                             ? "خدمات طلاء وديكور عالية الجودة للمشاريع السكنية والتجارية في المملكة العربية السعودية."

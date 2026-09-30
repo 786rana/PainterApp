@@ -1653,3 +1653,33 @@ html[lang="ar"] .cta h2 {
   width: 18px;
   height: 18px;
 }
+
+/* ---------- Logo mark ---------- */
+.logo .logo-mark {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  filter: drop-shadow(0 6px 12px rgb(var(--primary-rgb) / 0.35));
+  transition: transform var(--transition);
+}
+
+.logo:hover .logo-mark {
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.footer-brand h2 {
+  margin: 0;
+}
+
+.footer-brand .logo-mark {
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
