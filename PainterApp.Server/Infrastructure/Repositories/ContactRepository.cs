@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Dapper;
 using PainterApp.Server.Common.Interfaces;
 using PainterApp.Server.Domain.Entites;
@@ -24,7 +24,7 @@ namespace PainterApp.Server.Infrastructure.Repositories
 
         public async Task<List<ContactRequest>> GetAll()
         {
-            return (await _db.QueryAsync<ContactRequest>("SELECT * FROM Contacts")).ToList();
+            return (await _db.QueryAsync<ContactRequest>("SELECT * FROM Contacts ORDER BY Id DESC")).ToList();
         }
     }
 }

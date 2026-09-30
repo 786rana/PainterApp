@@ -8,7 +8,8 @@ export default defineConfig({
     proxy: {
       // Proxy API calls to the app service
       '/api': {
-        target: process.env.SERVER_HTTPS || process.env.SERVER_HTTP,
+        // Aspire injects SERVER_HTTPS/SERVER_HTTP; fall back to the API's launch profile
+        target: process.env.SERVER_HTTPS || process.env.SERVER_HTTP || 'http://localhost:5393',
         changeOrigin: true
       }
     }

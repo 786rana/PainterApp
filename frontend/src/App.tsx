@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AuthModal, { type AuthMode } from "./components/AuthModal";
+import ContactForm from "./components/ContactForm";
 import Navbar from "./components/Navbar";
 import HeroSlider from "./components/HeroSlider";
 import Testimonials from "./components/Testimonials";
 import { Helmet } from "react-helmet-async";
 import Footer from "./components/Footer";
 import "./App.css";
+import "./theme.css";
+import CountUp from "./components/CountUp";
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "./components/Icons";
-import { SITE } from "./data/site";
+import { useReveal } from "./hooks/useScrollEffects";
+import { getProjects } from "./api/projectApi";
+import Admin from "./pages/Admin";
+import type { Project } from "./types/project";
+import { SITE, whatsappQuoteHref } from "./data/site";
 import { categoryLabel, imageAlt, projects, serviceCategories } from "./data/services";
 
 const whyItems = [
@@ -44,8 +52,43 @@ const whyItems = [
     },
 ];
 
+const processSteps = [
+    {
+        title: { en: "Free Quote", ar: "عرض سعر مجاني" },
+        desc: {
+            en: "Message us on WhatsApp with photos of your space and get a quotation fast.",
+            ar: "راسلنا عبر واتساب مع صور للمكان واحصل على عرض سعر سريع.",
+        },
+    },
+    {
+        title: { en: "Site Visit", ar: "معاينة الموقع" },
+        desc: {
+            en: "We inspect the surfaces and agree colours, scope and timeline with you.",
+            ar: "نعاين الأسطح ونتفق معك على الألوان ونطاق العمل والجدول الزمني.",
+        },
+    },
+    {
+        title: { en: "Professional Work", ar: "تنفيذ احترافي" },
+        desc: {
+            en: "Surface preparation, priming and painting by our skilled team.",
+            ar: "تجهيز الأسطح والمعجون والدهان بواسطة فريقنا الماهر.",
+        },
+    },
+    {
+        title: { en: "Final Handover", ar: "التسليم النهائي" },
+        desc: {
+            en: "We clean up and walk through every detail with you before we finish.",
+            ar: "ننظف الموقع ونراجع معك كل التفاصيل قبل التسليم.",
+        },
+    },
+];
+
 const content = {
     en: {
+        processLabel: "How It Works",
+        processTitle: "A Simple 4-Step Process",
+        processSub: "From your first message to the final handover",
+        callNow: "Call",
         servicesLabel: "What We Offer",
         servicesTitle: "Our Services",
         servicesSub: "Complete painting solutions for homes and commercial spaces across Saudi Arabia",
@@ -71,6 +114,10 @@ const content = {
         chat: "WhatsApp",
     },
     ar: {
+        processLabel: "كيف نعمل",
+        processTitle: "4 خطوات بسيطة",
+        processSub: "من رسالتك الأولى حتى التسليم النهائي",
+        callNow: "اتصل",
         servicesLabel: "ما نقدمه",
         servicesTitle: "خدماتنا",
         servicesSub: "حلول طلاء متكاملة للمنازل والمساحات التجارية في جميع أنحاء السعودية",
@@ -107,12 +154,56 @@ const App = () => {
     });
     const t = content[lang];
     const isAr = lang === "ar";
+    const [authMode, setAuthMode] = useState<AuthMode | null>(null);
+    const closeAuth = useCallback(() => setAuthMode(null), []);
+
+    const [route, setRoute] = useState(() => window.location.hash);
+    const isAdminRoute = route === "#/admin";
+    const [apiProjects, setApiProjects] = useState<Project[]>([]);
+
+    useReveal(`${lang}-${isAdminRoute}`);
+
+    useEffect(() => {
+        const onHash = () => setRoute(window.location.hash);
+        window.addEventListener("hashchange", onHash);
+        return () => window.removeEventListener("hashchange", onHash);
+    }, []);
+
+    // Projects added in the dashboard replace the sample gallery. If the API is
+    // unreachable (e.g. a static deployment) the sample gallery stays.
+    useEffect(() => {
+        getProjects().then(setApiProjects).catch(() => setApiProjects([]));
+    }, []);
+
+    const galleryItems = apiProjects.length
+        ? apiProjects.map((p) => ({
+              title: { en: p.title, ar: p.title },
+              desc: { en: p.description, ar: p.description },
+              img: p.imageUrl,
+              imageName: `api-${p.id}`,
+          }))
+        : projects;
 
     useEffect(() => {
         document.documentElement.lang = lang;
         document.documentElement.dir = isAr ? "rtl" : "ltr";
         try { localStorage.setItem("lang", lang); } catch { /* ignore */ }
     }, [lang, isAr]);
+
+    if (isAdminRoute) {
+        return (
+            <div className="app" dir={isAr ? "rtl" : "ltr"}>
+                <Helmet>
+                    <title>{isAr ? "لوحة التحكم | زمان" : "Dashboard | Zaman Paints & Decor"}</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
+                <Admin lang={lang} onLogin={() => setAuthMode("login")} />
+                {authMode && (
+                    <AuthModal mode={authMode} lang={lang} onModeChange={setAuthMode} onClose={closeAuth} />
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="app" dir={lang === "ar" ? "rtl" : "ltr"}>
@@ -144,21 +235,24 @@ const App = () => {
             <a href="#main" className="skip-link">
                 {isAr ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
-            <Navbar lang={lang} setLang={setLang} />
+            <Navbar lang={lang} setLang={setLang} onAuth={setAuthMode} />
+            {authMode && (
+                <AuthModal mode={authMode} lang={lang} onModeChange={setAuthMode} onClose={closeAuth} />
+            )}
             <main id="main" tabIndex={-1}>
             <HeroSlider lang={lang} />
 
             <section className="trust">
                 <div className="trust-card">
-                    <h2>100+</h2>
+                    <CountUp end={100} suffix="+" />
                     <p>{t.projects}</p>
                 </div>
                 <div className="trust-card">
-                    <h2>10+</h2>
+                    <CountUp end={10} suffix="+" />
                     <p>{t.experience}</p>
                 </div>
                 <div className="trust-card">
-                    <h2>100%</h2>
+                    <CountUp end={100} suffix="%" />
                     <p>{t.satisfaction}</p>
                 </div>
             </section>
@@ -167,14 +261,14 @@ const App = () => {
 
             <section className="why-us section" id="about">
                 <div className="container">
-                    <div className="section-header">
+                    <div className="section-header" data-reveal>
                         <span className="section-label">{t.aboutLabel}</span>
                         <h2>{t.aboutTitle}</h2>
                         <p>{t.aboutSub}</p>
                     </div>
                     <div className="why-grid">
                         {whyItems.map((item) => (
-                            <div className="why-card" key={item.title.en}>
+                            <div className="why-card" data-reveal key={item.title.en}>
                                 <div className={`why-icon why-icon--${item.icon}`} aria-hidden="true" />
                                 <h3>{lang === "ar" ? item.title.ar : item.title.en}</h3>
                                 <p>{lang === "ar" ? item.desc.ar : item.desc.en}</p>
@@ -186,7 +280,7 @@ const App = () => {
 
             <section className="section" id="services">
                 <div className="container">
-                    <div className="section-header">
+                    <div className="section-header" data-reveal>
                         <span className="section-label">{t.servicesLabel}</span>
                         <h2>{t.servicesTitle}</h2>
                         <p>{t.servicesSub}</p>
@@ -222,7 +316,7 @@ const App = () => {
                                     const badge = categoryLabel(s.category, lang);
                                     return (
                                         <article
-                                            className="service-card"
+                                            className="service-card" data-reveal
                                             id={`service-${s.id}`}
                                             key={s.id}
                                         >
@@ -240,7 +334,12 @@ const App = () => {
                                             </div>
                                             <div className="service-body">
                                                 <p>{desc}</p>
-                                                <a href="#contact" className="service-link">
+                                                <a
+                                                    href={whatsappQuoteHref(title, lang)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="service-link"
+                                                >
                                                     {lang === "ar" ? "اطلب عرض سعر ←" : "Get quote →"}
                                                 </a>
                                             </div>
@@ -253,20 +352,40 @@ const App = () => {
                 </div>
             </section>
 
+            <section className="section process" id="process">
+                <div className="container">
+                    <div className="section-header" data-reveal>
+                        <span className="section-label">{t.processLabel}</span>
+                        <h2>{t.processTitle}</h2>
+                        <p>{t.processSub}</p>
+                    </div>
+                    <ol className="steps">
+                        {processSteps.map((step, i) => (
+                            <li className="step" key={step.title.en} data-reveal>
+                                <span className="step-num" aria-hidden="true">{i + 1}</span>
+                                <h3>{isAr ? step.title.ar : step.title.en}</h3>
+                                <p>{isAr ? step.desc.ar : step.desc.en}</p>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            </section>
+
             <section className="section dark" id="work">
                 <div className="container">
-                    <div className="section-header">
+                    <div className="section-header" data-reveal>
                         <span className="section-label">{t.workLabel}</span>
                         <h2>{t.workTitle}</h2>
                         <p>{t.workSub}</p>
                     </div>
                     <div className="gallery">
-                        {projects.map((p, i) => {
+                        {galleryItems.map((p, i) => {
                             const title = lang === "ar" ? p.title.ar : p.title.en;
                             const desc = lang === "ar" ? p.desc.ar : p.desc.en;
                             return (
                                 <article
                                     className={`gallery-card ${i === 0 ? "gallery-card--featured" : ""}`}
+                                    data-reveal
                                     key={p.imageName + title}
                                 >
                                     <div className="gallery-img-wrap">
@@ -305,23 +424,23 @@ const App = () => {
 
             <section className="section contact" id="contact">
                 <div className="container">
-                    <div className="section-header">
+                    <div className="section-header" data-reveal>
                         <span className="section-label">{t.contactLabel}</span>
                         <h2>{t.contactTitle}</h2>
                         <p>{t.contactSub}</p>
                     </div>
                     <div className="contact-grid">
-                        <div className="contact-card">
+                        <div className="contact-card" data-reveal>
                             <div className="contact-icon"><PhoneIcon /></div>
                             <h3>{t.phone}</h3>
                             <a href={SITE.phoneHref}><span className="ltr">{SITE.phoneDisplay}</span></a>
                         </div>
-                        <div className="contact-card">
+                        <div className="contact-card" data-reveal>
                             <div className="contact-icon"><PinIcon /></div>
                             <h3>{t.locationLabel}</h3>
                             <p>{t.location}</p>
                         </div>
-                        <div className="contact-card">
+                        <div className="contact-card" data-reveal>
                             <div className="contact-icon"><WhatsAppIcon /></div>
                             <h3>{t.chat}</h3>
                             <a
@@ -343,6 +462,8 @@ const App = () => {
                             <WhatsAppIcon /> {t.whatsapp}
                         </a>
                     </div>
+
+                    <ContactForm lang={lang} />
                 </div>
             </section>
 
@@ -368,6 +489,20 @@ const App = () => {
                     title="Zaman Paints location"
                 />
             </section>
+
+            <div className="mobile-cta">
+                <a href={SITE.phoneHref} className="mobile-cta-call">
+                    <PhoneIcon /> {t.callNow}
+                </a>
+                <a
+                    href={SITE.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mobile-cta-whatsapp"
+                >
+                    <WhatsAppIcon /> {t.chat}
+                </a>
+            </div>
 
             <Footer lang={lang} />
         </div>
