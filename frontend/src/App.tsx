@@ -288,6 +288,17 @@ const App = () => {
                         <p>{t.servicesSub}</p>
                     </div>
 
+                    {serviceCategories.length > 1 && (
+                        <nav className="service-jump" aria-label={t.servicesTitle}>
+                            {serviceCategories.map((category) => (
+                                <a key={category.id} href={`#services-${category.id}`}>
+                                    {isAr ? category.label.ar : category.label.en}
+                                    <span>{category.services.length}</span>
+                                </a>
+                            ))}
+                        </nav>
+                    )}
+
                     {serviceCategories.map((category) => (
                         <div
                             key={category.id}
@@ -330,11 +341,9 @@ const App = () => {
                                                     loading="lazy"
                                                 />
                                                 <span className="service-badge">{badge}</span>
-                                                <div className="service-img-caption">
-                                                    <h4>{title}</h4>
-                                                </div>
                                             </div>
                                             <div className="service-body">
+                                                <h4>{title}</h4>
                                                 <p>{desc}</p>
                                                 <a
                                                     href={whatsappQuoteHref(title, lang)}
@@ -342,7 +351,8 @@ const App = () => {
                                                     rel="noopener noreferrer"
                                                     className="service-link"
                                                 >
-                                                    {lang === "ar" ? "اطلب عرض سعر ←" : "Get quote →"}
+                                                    <WhatsAppIcon />
+                                                    {lang === "ar" ? "اطلب عرض سعر" : "Get a quote"}
                                                 </a>
                                             </div>
                                         </article>

@@ -1299,3 +1299,275 @@ html[lang="ar"] .cta h2 {
     justify-content: flex-end;
   }
 }
+
+/* =====================================================================
+   POLISH: services, hero quote card, testimonials, gallery, footer
+   ===================================================================== */
+
+/* ---------- Service jump chips ---------- */
+.service-jump {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: -18px 0 clamp(32px, 5vw, 52px);
+}
+
+.service-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 10px 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+[dir="rtl"] .service-jump a {
+  padding: 0 20px 0 10px;
+}
+
+.service-jump a span {
+  min-width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 13px;
+}
+
+.service-jump a:hover {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* ---------- Service cards ---------- */
+.services-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+
+.service-card {
+  background: var(--card);
+}
+
+.service-img-wrap {
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.service-body {
+  padding: 20px 22px 22px;
+}
+
+.service-body h4 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.service-body p {
+  font-size: 14.5px;
+  margin-bottom: 18px;
+}
+
+.service-link {
+  width: fit-content;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 14px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.service-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.service-link:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ---------- Hero quick-quote card ---------- */
+.hero-quote {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .hero-quote {
+    display: block;
+    flex: none;
+    width: 340px;
+    margin-inline-start: auto;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 24px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+    color: var(--text);
+    animation: fadeUp 0.9s ease;
+  }
+
+  .hero-quote h2 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .hero-quote p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .hero-quote label span {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .hero-quote select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+  }
+
+  .hero-quote select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(242, 106, 0, 0.15);
+  }
+
+  .hero-quote-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 50px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.35);
+    transition: transform var(--transition), background var(--transition);
+  }
+
+  .hero-quote-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-dark);
+  }
+
+  .hero-quote-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ---------- Testimonials ---------- */
+.testimonial-card {
+  position: relative;
+  padding: clamp(28px, 5vw, 44px) clamp(22px, 5vw, 56px);
+  overflow: hidden;
+}
+
+.testimonial-card::before {
+  content: "\201C";
+  position: absolute;
+  top: -6px;
+  inset-inline-start: 22px;
+  font-family: Georgia, serif;
+  font-size: 120px;
+  line-height: 1;
+  color: var(--primary-light);
+  pointer-events: none;
+}
+
+.testimonial-card p {
+  position: relative;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: clamp(18px, 2.2vw, 22px);
+  color: var(--ink);
+}
+
+.testimonial-card h4 {
+  position: relative;
+  color: var(--primary-dark);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 1100px) {
+  .test-nav.prev { left: 6px; }
+  .test-nav.next { right: 6px; }
+}
+
+/* ---------- Gallery ---------- */
+.gallery-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.gallery-card img {
+  transition: transform 0.7s ease;
+}
+
+.gallery-card:hover img {
+  transform: scale(1.06);
+}
+
+/* ---------- Why-us & process ---------- */
+.why-us {
+  background:
+    radial-gradient(900px 400px at 100% 0%, rgba(242, 106, 0, 0.06), transparent 60%),
+    var(--bg);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark), var(--primary));
+}
+
+.footer-box h2 {
+  font-family: var(--font-display);
+}
+
+.footer-box a {
+  transition: color var(--transition), transform var(--transition);
+}
+
+.footer-box a:hover {
+  color: var(--primary);
+}

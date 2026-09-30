@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
+import { useServiceCategories } from "../data/ServicesContext";
 import { BRAND_NAME, heroImages, imageAlt } from "../data/services";
+import { whatsappQuoteHref } from "../data/site";
+import { WhatsAppIcon } from "./Icons";
 
 const slides = [
     {
@@ -29,6 +32,10 @@ type Lang = "en" | "ar";
 
 const HeroSlider = ({ lang }: { lang: Lang }) => {
     const [index, setIndex] = useState(0);
+    const { categories } = useServiceCategories();
+    const allServices = categories.flatMap((c) => c.services);
+    const [picked, setPicked] = useState(0);
+    const chosen = allServices[Math.min(picked, allServices.length - 1)];
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -101,6 +108,35 @@ const HeroSlider = ({ lang }: { lang: Lang }) => {
                         ))}
                     </div>
                 </div>
+
+                {chosen && (
+                    <aside className="hero-quote" aria-label={lang === "ar" ? "عرض سعر سريع" : "Quick quote"}>
+                        <h2>{lang === "ar" ? "احصل على عرض سعر" : "Get a quick quote"}</h2>
+                        <p>
+                            {lang === "ar"
+                                ? "اختر الخدمة وراسلنا مباشرة عبر واتساب."
+                                : "Choose a service and message us directly on WhatsApp."}
+                        </p>
+                        <label>
+                            <span>{lang === "ar" ? "الخدمة" : "Service"}</span>
+                            <select value={picked} onChange={(e) => setPicked(Number(e.target.value))}>
+                                {allServices.map((s, i) => (
+                                    <option key={s.id} value={i}>
+                                        {lang === "ar" ? s.title.ar : s.title.en}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <a
+                            className="hero-quote-btn"
+                            href={whatsappQuoteHref(lang === "ar" ? chosen.title.ar : chosen.title.en, lang)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <WhatsAppIcon /> {lang === "ar" ? "راسلنا على واتساب" : "Continue on WhatsApp"}
+                        </a>
+                    </aside>
+                )}
             </div>
         </section>
     );
