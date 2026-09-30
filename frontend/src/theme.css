@@ -6,6 +6,8 @@
 :root {
   --primary: #f26a00;
   --primary-dark: #d94f00;
+  --primary-rgb: 242 106 0;
+  --primary-soft: #ffb347;
   --primary-light: #fff1e3;
   --ink: #101828;
   --dark: #0e1a2f;
@@ -71,7 +73,7 @@ html[lang="ar"] .cta h2 {
 
 .hero-btn {
   padding: 14px 30px;
-  box-shadow: 0 10px 28px rgba(242, 106, 0, 0.38);
+  box-shadow: 0 10px 28px rgb(var(--primary-rgb) / 0.38);
 }
 
 .hero-btn-outline {
@@ -137,7 +139,7 @@ html[lang="ar"] .cta h2 {
 .quote-btn {
   padding: 10px 22px;
   min-height: 40px;
-  box-shadow: 0 6px 18px rgba(242, 106, 0, 0.3);
+  box-shadow: 0 6px 18px rgb(var(--primary-rgb) / 0.3);
 }
 
 .menu-btn {
@@ -683,7 +685,7 @@ html[lang="ar"] .cta h2 {
 .auth-field input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(242, 106, 0, 0.15);
+  box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.15);
 }
 
 .auth-password {
@@ -727,7 +729,7 @@ html[lang="ar"] .cta h2 {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(242, 106, 0, 0.3);
+  box-shadow: 0 10px 24px rgb(var(--primary-rgb) / 0.3);
   transition: transform var(--transition), opacity var(--transition);
 }
 
@@ -856,7 +858,7 @@ html[lang="ar"] .cta h2 {
 .auth-field textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(242, 106, 0, 0.15);
+  box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.15);
 }
 
 .contact-form-status {
@@ -1164,7 +1166,7 @@ html[lang="ar"] .cta h2 {
 
 .admin-stat.on {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(242, 106, 0, 0.14);
+  box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.14);
 }
 
 .admin-stat.on strong {
@@ -1196,7 +1198,7 @@ html[lang="ar"] .cta h2 {
 .auth-field select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(242, 106, 0, 0.15);
+  box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.15);
 }
 
 .auth-field em {
@@ -1247,7 +1249,7 @@ html[lang="ar"] .cta h2 {
 
 .admin-row.editing {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(242, 106, 0, 0.14);
+  box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.14);
 }
 
 .admin-row img,
@@ -1460,7 +1462,7 @@ html[lang="ar"] .cta h2 {
   .hero-quote select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(242, 106, 0, 0.15);
+    box-shadow: 0 0 0 4px rgb(var(--primary-rgb) / 0.15);
   }
 
   .hero-quote-btn {
@@ -1543,7 +1545,7 @@ html[lang="ar"] .cta h2 {
 /* ---------- Why-us & process ---------- */
 .why-us {
   background:
-    radial-gradient(900px 400px at 100% 0%, rgba(242, 106, 0, 0.06), transparent 60%),
+    radial-gradient(900px 400px at 100% 0%, rgb(var(--primary-rgb) / 0.06), transparent 60%),
     var(--bg);
 }
 
