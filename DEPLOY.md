@@ -1,26 +1,24 @@
 # Deploying Zaman Paints & Decor
 
-The site has two parts that are hosted separately:
+**One deployment serves everything.** The ASP.NET Core app in `PainterApp.Server/` hosts the React
+website (from its `wwwroot`) *and* the API at `/api`, so the site and the backend share one address
+(for example `https://zaman-paints.azurewebsites.net`). No CORS setup, no second host.
 
-| Part | What it is | Where it runs |
-|---|---|---|
-| **Frontend** | React/Vite site in `frontend/` | **Vercel** (static hosting) |
-| **Backend** | ASP.NET Core API in `PainterApp.Server/` | **Azure App Service** (or any Docker host) |
-| **Database** | SQL Server | **Azure SQL** |
+| Piece | Where it runs |
+|---|---|
+| Website + API | **Azure App Service** (one web app) |
+| Database | **Azure SQL** |
 
-Vercel cannot run .NET, so the API needs its own host. The frontend finds it through one
-environment variable, `VITE_API_URL`. Without a backend the public pages still work, but the
-contact form, login, dashboard and saved settings will not.
-
-Order: **1. database + backend → 2. Vercel → 3. connect them (CORS) → 4. first login.**
+The same app also runs on any container host (see *Docker* below). SQL Server is required; the
+data layer uses SQL Server specifically.
 
 ---
 
-## 1. Backend and database on Azure
+## 1. Deploy to Azure
 
-Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) and the .NET 10 SDK.
-Run these in PowerShell from the repository root. Replace the `<...>` values. Names marked *unique*
-must be unique worldwide.
+Prerequisites: [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli), the .NET 10 SDK
+and Node.js 20.19+ (publishing also builds the website). Run in PowerShell from the repository root
+and replace the `<...>` values. Names marked *unique* must be unique worldwide.
 
 ```powershell
 az login
@@ -31,9 +29,9 @@ $sql     = "painter-sql-<unique>"     # SQL server name (unique)
 $sqlUser = "painteradmin"
 $sqlPass = "<a strong password>"      # 12+ chars, mixed case, digits, symbols
 $plan    = "painter-plan"
-$api     = "painter-api-<unique>"     # becomes https://<name>.azurewebsites.net
+$app     = "zaman-paints-<unique>"    # becomes https://<name>.azurewebsites.net
 
-# Secrets -- generate once and keep them somewhere safe
+# Secret used to sign login tokens -- generate once and keep it safe
 $jwtKey  = [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(48))
 
 az group create -n $rg -l $loc
@@ -45,91 +43,75 @@ az sql db create -g $rg -s $sql -n PainterApp --service-objective Basic
 
 # Web app (Linux, .NET 10)
 az appservice plan create -g $rg -n $plan --sku B1 --is-linux
-az webapp create -g $rg -p $plan -n $api --runtime "DOTNETCORE:10.0"
-az webapp config set -g $rg -n $api --always-on true --generic-configurations '{\"healthCheckPath\":\"/healthz\"}'
+az webapp create -g $rg -p $plan -n $app --runtime "DOTNETCORE:10.0"
+az webapp config set -g $rg -n $app --always-on true --generic-configurations '{\"healthCheckPath\":\"/healthz\"}'
 
-# Configuration (these are the settings the API reads; "__" means a nested setting)
-az webapp config appsettings set -g $rg -n $api --settings `
+# Settings ("__" means a nested setting)
+az webapp config appsettings set -g $rg -n $app --settings `
   ASPNETCORE_ENVIRONMENT=Production `
   "ConnectionStrings__Default=Server=tcp:$sql.database.windows.net,1433;Database=PainterApp;User ID=$sqlUser;Password=$sqlPass;Encrypt=True;TrustServerCertificate=False;" `
   "Jwt__Key=$jwtKey" `
   Database__AutoMigrate=true `
   Admin__Email=<your admin email> `
-  "Admin__Password=<your admin password, 8+ chars>" `
-  "Cors__AllowedOrigins__0=https://<your-site>.vercel.app" `
-  "Cors__AllowedOrigins__1=https://*.vercel.app"
+  "Admin__Password=<your admin password, 8+ chars>"
 
-# Publish and upload the API
+# Build (API + website together) and upload
 dotnet publish PainterApp.Server -c Release -o publish
 Compress-Archive -Path publish\* -DestinationPath publish.zip -Force
-az webapp deploy -g $rg -n $api --src-path publish.zip --type zip
+az webapp deploy -g $rg -n $app --src-path publish.zip --type zip
 ```
 
-Check it: open `https://<api>.azurewebsites.net/healthz`. You should see `{"status":"ok"}`.
+Open `https://<app>.azurewebsites.net`: the website loads, and `https://<app>.azurewebsites.net/healthz`
+shows `{"status":"ok"}`.
 
-What `Database__AutoMigrate=true` does on every start-up: creates the tables if they are missing,
-applies schema upgrades (safe to repeat), and, only when there are **no users yet**, creates your
-admin account from `Admin__Email` / `Admin__Password`. After the first successful start you can
-remove `Admin__Password` from the settings.
+**To release an update**, run the last three commands again (`dotnet publish`, zip, `az webapp deploy`).
 
-Approximate cost: App Service B1 and SQL Basic are each a few US dollars per month. Azure also has
-a free SQL database offer and a free (F1) App Service tier with limits. Check current pricing for
-your region before choosing.
+What `Database__AutoMigrate=true` does on every start: creates the tables if missing, applies schema
+upgrades (safe to repeat), and, only when there are **no users yet**, creates your admin account from
+`Admin__Email` / `Admin__Password`. After the first successful start you can delete `Admin__Password`.
 
-### Any other host (Docker)
+Approximate cost: App Service B1 and SQL Basic are each a few US dollars a month. Azure also has free
+tiers (with limits). Check current pricing for your region.
 
-`PainterApp.Server/Dockerfile` builds the same API for any container host (Azure Container Apps,
-Render, Railway, Fly.io...). Build from the repository root:
+### Docker (any other host)
+
+`PainterApp.Server/Dockerfile` builds one image with the website and the API. Build from the
+repository root:
 
 ```bash
-docker build -f PainterApp.Server/Dockerfile -t painter-api .
+docker build -f PainterApp.Server/Dockerfile -t painter-app .
 ```
 
-It listens on port `8080` and uses the same settings as above (as environment variables). You still
-need a **SQL Server** database; Azure SQL works from any host if you allow the host's IP in the
-SQL server firewall.
+It listens on port `8080` and reads the same settings as environment variables. Point
+`ConnectionStrings__Default` at a SQL Server (Azure SQL works from any host if you allow the host's IP
+in the SQL firewall).
 
 ---
 
-## 2. Frontend on Vercel
+## 2. First login and content
 
-1. In Vercel: **Add New -> Project**, import this GitHub repository.
-2. Leave **Root Directory** empty. The root `vercel.json` already tells Vercel how to build `frontend/`.
-3. Add an environment variable (for **Production** and **Preview**):
-
-   | Name | Value |
-   |---|---|
-   | `VITE_API_URL` | `https://<api>.azurewebsites.net`  (no trailing slash, no `/api`) |
-
-4. Deploy. If you add or change the variable later, **redeploy**: the address is baked in at build time.
-
-If you use a custom domain (for example `zamanpaints.com`), also add it in Vercel and then add it
-to the backend CORS list (next step).
-
-## 3. Connect them (CORS)
-
-The API only accepts browser requests from sites you list. Set these on the backend
-(`Cors__AllowedOrigins__0`, `__1`, `__2`, ... one per site):
-
-- your production address, e.g. `https://zamanpaints.com` and `https://<project>.vercel.app`
-- `https://*.vercel.app` so preview deployments work
-
-```powershell
-az webapp config appsettings set -g $rg -n $api --settings `
-  "Cors__AllowedOrigins__0=https://zamanpaints.com" `
-  "Cors__AllowedOrigins__1=https://<project>.vercel.app" `
-  "Cors__AllowedOrigins__2=https://*.vercel.app"
-```
-
-## 4. First login and content
-
-1. Open your site -> the palette icon (**Settings**) -> **Log in**, using `Admin__Email` / `Admin__Password`.
-2. Open **Dashboard** -> **Services** -> **Import the sample services**, then edit them.
+1. Open your site, click the palette icon (**Settings**) -> **Log in** with `Admin__Email` / `Admin__Password`.
+2. **Dashboard -> Services -> Import the sample services**, then edit them.
 3. Add real photos under **Projects** (images are links, so host the photos first).
-4. Visitors can pick a design on the Settings page; logged-in users have it saved to their account.
+4. Visitors choose a design on the Settings page; logged-in users have it saved to their account.
 
 Public sign-up is **closed** in production (`Auth__AllowRegistration` is off), so only accounts you
-create exist. Turn it on only temporarily if you need more accounts.
+create exist.
+
+## Custom domain
+
+In Azure: **App Service -> Custom domains -> Add custom domain**, then bind a free managed certificate.
+Update `canonical`/sitemap URLs in `frontend/` if your domain is not `zamanpaints.com`.
+
+---
+
+## Optional: frontend on Vercel, backend elsewhere
+
+Not needed for the setup above. If you prefer it, deploy only the API (the same steps) and host
+`frontend/` on Vercel: import the repository (the root `vercel.json` already builds `frontend/`), add
+the environment variable `VITE_API_URL=https://<app>.azurewebsites.net` (no trailing slash), redeploy,
+and allow the Vercel address on the backend with `Cors__AllowedOrigins__0=https://<project>.vercel.app`
+and `Cors__AllowedOrigins__1=https://*.vercel.app`.
 
 ---
 
@@ -137,21 +119,20 @@ create exist. Turn it on only temporarily if you need more accounts.
 
 | Setting (environment variable) | Purpose |
 |---|---|
-| `ConnectionStrings__Default` | SQL Server connection string |
-| `Jwt__Key` | Secret used to sign login tokens, at least 32 characters. **Required.** Keep it private. |
-| `Cors__AllowedOrigins__N` | Sites allowed to call the API (supports `https://*.vercel.app`) |
+| `ConnectionStrings__Default` | SQL Server connection string. **Required.** |
+| `Jwt__Key` | Secret that signs login tokens, at least 32 characters. **Required.** Keep it private. |
 | `Database__AutoMigrate` | `true` = create/upgrade tables on start-up |
 | `Admin__Email`, `Admin__Password` | First admin account, created only when there are no users |
 | `Auth__AllowRegistration` | `true` lets anyone sign up. Default `false` |
-| `VITE_API_URL` (Vercel) | Address of the backend, used by the frontend |
+| `Cors__AllowedOrigins__N` | Only for the split setup above (supports `https://*.vercel.app`) |
 
 ## Troubleshooting
 
 | Symptom | Likely cause and fix |
 |---|---|
-| Browser console: *blocked by CORS policy* | The site's address is missing from `Cors__AllowedOrigins__N`, or it has a different scheme/www. Add it and restart the web app. |
-| Site loads but login/forms fail with *Network Error* | `VITE_API_URL` is missing or wrong on Vercel. Fix it and **redeploy**. |
-| API returns 500 at start / `/healthz` fails | Check **Log stream** in Azure. Common: wrong SQL password, firewall rule missing, or `Jwt__Key` shorter than 32 characters. |
+| Site shows *Hey, .NET Core developer* / 404 at `/` | The website was not included: publish from a machine with Node.js, or check `publish\wwwroot\index.html` exists before zipping. |
+| `/healthz` fails or app keeps restarting | Open **Log stream** in Azure. Common: wrong SQL password, missing firewall rule, or `Jwt__Key` shorter than 32 characters. |
 | *Cannot open server ... requested by the login* | The SQL firewall blocks the web app. Re-run the `AllowAzureServices` rule. |
-| Login says *Incorrect email or password* for the admin | The admin is created only when there are no users. Check `Admin__Email`, or add the account via SQL. |
-| Changes in the dashboard do not show | Hard refresh. The public site reads services and projects from the API. |
+| Admin login says *Incorrect email or password* | The admin is created only when there are no users. Check `Admin__Email`, or add the account via SQL. |
+| Dashboard changes do not show | Hard refresh (Ctrl+F5). The public site reads services and projects from the API. |
+| Old site after an update | Deploy again and hard refresh. `index.html` is never cached; assets are fingerprinted. |

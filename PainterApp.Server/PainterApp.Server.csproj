@@ -23,8 +23,24 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
+  <!--
+    Publishing also builds the React site (../frontend) and ships it inside the API's wwwroot, so a
+    single deployment serves both the website and /api. Needs Node.js on the build machine.
+    Skip with -p:SkipFrontendBuild=true (the Dockerfile builds the frontend in its own stage).
+  -->
+  <Target Name="BuildFrontend" AfterTargets="Publish" Condition="'$(SkipFrontendBuild)' != 'true'">
+    <!-- Install only when missing: never delete a node_modules another process (e.g. the dev server) is using. -->
+    <Exec WorkingDirectory="..\frontend" Command="npm ci" Condition="!Exists('..\frontend\node_modules')" />
+    <Exec WorkingDirectory="..\frontend" Command="npm run build" />
+    <ItemGroup>
+      <FrontendFiles Include="..\frontend\dist\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FrontendFiles)" DestinationFiles="@(FrontendFiles->'$(PublishDir)wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
   <ItemGroup>
     <!-- The idempotent schema/migration script, applied at start-up when Database:AutoMigrate is on -->
     <EmbeddedResource Include="..\database\schema.sql" LogicalName="schema.sql" />
   </ItemGroup>
+
 </Project>

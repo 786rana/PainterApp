@@ -131,7 +131,27 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseStaticFiles();
+// Serve the built website (wwwroot) from the same app as the API.
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    await next();
+});
+
+app.UseDefaultFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        // Vite fingerprints everything under /assets, so it can be cached for a year;
+        // the HTML shell must always be re-checked so new deployments show up.
+        var isAsset = ctx.Context.Request.Path.StartsWithSegments("/assets");
+        ctx.Context.Response.Headers.CacheControl = isAsset
+            ? "public,max-age=31536000,immutable"
+            : "no-cache";
+    }
+});
 
 app.UseCors();
 app.UseAuthentication();

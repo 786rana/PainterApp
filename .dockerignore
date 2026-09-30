@@ -1,7 +1,7 @@
 **/bin/
 **/obj/
 **/node_modules/
-frontend/
+frontend/dist/
 .git/
 .vs/
 .vscode/
